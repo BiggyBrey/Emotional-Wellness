@@ -5,12 +5,12 @@ const app = express();
 //elias has a non cors version ie server proxy
 // import cors from "cors";
 
-const userRouter = require("./routes/userRouter");
+const apiRouter = require("./routes/router");
 const PORT = 3000;
 
 app.use(express.json());
 // app.use(cors());
-app.use("/api/v1", userRouter);
+app.use("/api/v1", apiRouter);
 
 const uri =
   "mongodb+srv://michaeledquilan:avBMVN4pNUArKfQP@cluster0.ipfvapa.mongodb.net/emotional-wellness?retryWrites=true&w=majority&appName=Cluster0";

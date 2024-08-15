@@ -1,4 +1,3 @@
-const mongoose = require("mongoose");
 const express = require("express");
 const bcrypt = require("bcrypt");
 const router = express.Router();
@@ -6,7 +5,7 @@ const router = express.Router();
 const User = require("../models/userModel");
 
 //get a user
-router.get("/users/:id", async (req, res) => {
+router.get("/:id", async (req, res) => {
   try {
     let id = req.params.id;
     let foundUser = await User.findById(id);
@@ -16,13 +15,20 @@ router.get("/users/:id", async (req, res) => {
       res.status(200).send(foundUser);
     }
   } catch (error) {
+    if (error.kind === "ObjectId") {
+      return res.status(400).json({
+        message:
+          "there was a problem with the ObjectId format. Please ensure that you've entered a valid ObjectId",
+        reason: error.reason.message,
+      });
+    }
     console.log(error);
-    res.status(400).send(error);
+    res.status(500).send(error);
   }
 });
 
 // Route to check if a username is available
-router.get("/users/check-username/:username", async (req, res) => {
+router.get("/check-username/:username", async (req, res) => {
   try {
     const { username } = req.params;
 
@@ -41,7 +47,7 @@ router.get("/users/check-username/:username", async (req, res) => {
 });
 
 //get all users
-router.get("/users", async (req, res) => {
+router.get("/", async (req, res) => {
   try {
     let allUsers = await User.find();
     if (allUsers.length === 0) {
@@ -56,7 +62,7 @@ router.get("/users", async (req, res) => {
 });
 
 //create a user
-router.post("/users/register", async (req, res) => {
+router.post("/register", async (req, res) => {
   try {
     // Get user info
     const { username, password } = req.body;
@@ -64,7 +70,7 @@ router.post("/users/register", async (req, res) => {
     // Check if username already exists
     const existingUser = await User.findOne({ username });
     if (existingUser) {
-      //return prevents server from crashing
+      //return prevents server from crashing?
       return res.status(400).json({ message: "Username already exists" });
     }
 
@@ -75,6 +81,7 @@ router.post("/users/register", async (req, res) => {
     // Create new user
     const newUser = new User({ username, password: hashedPassword });
     await newUser.save();
+    //res.send vs res.json standard?
     res
       .status(201)
       .json({ message: "User registered successfully", user: newUser });
@@ -87,7 +94,7 @@ router.post("/users/register", async (req, res) => {
 });
 
 // Route for User to Login
-router.post("/users/login", async (req, res) => {
+router.post("/login", async (req, res) => {
   try {
     const { username, password } = req.body;
 
@@ -112,7 +119,7 @@ router.post("/users/login", async (req, res) => {
 });
 
 //update user
-router.put("/users/:id", async (req, res) => {
+router.put("/:id", async (req, res) => {
   try {
     const id = req.params.id;
     const { username, password } = req.body;
@@ -144,7 +151,7 @@ router.put("/users/:id", async (req, res) => {
 });
 
 //delete user
-router.delete("/users/:id", async (req, res) => {
+router.delete("/:id", async (req, res) => {
   try {
     const id = req.params.id;
     let foundUser = await User.findByIdAndDelete(id);
