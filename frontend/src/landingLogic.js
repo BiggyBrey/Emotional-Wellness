@@ -1,8 +1,17 @@
+import React, { useEffect } from'react';
 
-document.getElementById('signup-btn').addEventListener('click', function() {
-    document.getElementById('signup-form').style.display = 'flex';
-});
+const landingScrolling = () => {
+  useEffect(() => {
+    const anchorLinks = document.querySelectorAll('nav a[href^="#"]');
+    anchorLinks.forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        document.querySelector(this.getAttribute('href')).scrollIntoView({
+          behavior: 'smooth'
+        });
+      });
+    });
+  }, []);
+};
 
-document.getElementById('close-btn').addEventListener('click', function() {
-    document.getElementById('signup-form').style.display = 'none';
-});
+export default landingScrolling;
