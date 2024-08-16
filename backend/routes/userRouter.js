@@ -4,7 +4,7 @@ const router = express.Router();
 
 const User = require("../models/userModel");
 
-//get a user
+//get a user by id
 router.get("/:id", async (req, res) => {
   try {
     let id = req.params.id;
@@ -60,6 +60,25 @@ router.get("/", async (req, res) => {
     res.status(400).send(error);
   }
 });
+
+// get all journals from user
+// user should only be able to see all their own journals
+router.get("/journalsFrom/:uid", async (req, res) => {
+  try {
+    const userID = req.params.uid;
+
+    const foundUser = await User.findById(userID).populate("journals");
+    if (!foundUser) {
+      res.status(404).send("User not found");
+    } else {
+      res.status(200).json(foundUser.journals);
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).send(error);
+  }
+});
+// get all discussions from user
 
 //create a user
 router.post("/register", async (req, res) => {

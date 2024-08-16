@@ -20,10 +20,10 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-//get all Journals
+//get all non private Journals
 router.get("/", async (req, res) => {
   try {
-    let allJournals = await Journal.find();
+    let allJournals = await Journal.find({ private: false });
     if (allJournals.length === 0) {
       res.status(404).send("No Journals found");
     } else {
@@ -40,7 +40,7 @@ router.get("/", async (req, res) => {
 router.post("/write", async (req, res) => {
   try {
     // Get Journal info
-    const { userID, content } = req.body;
+    const { userID, content, private } = req.body;
     const currentDate = new Date();
 
     // check if user exists
@@ -54,6 +54,7 @@ router.post("/write", async (req, res) => {
       user: userID,
       date: currentDate,
       content,
+      private,
     });
     await newJournal.save();
     res.status(201).json({
@@ -77,12 +78,12 @@ router.post("/write", async (req, res) => {
 router.put("/:id", async (req, res) => {
   try {
     const id = req.params.id;
-    const { content } = req.body;
+    const { content, private } = req.body;
 
     // update Journal with hashed password
     const updatedJournal = await Journal.findByIdAndUpdate(
       id,
-      { content },
+      { content, private },
       { new: true }
     );
     if (!updatedJournal) {
@@ -114,6 +115,7 @@ router.delete("/:id", async (req, res) => {
       res.status(404).send("User not Found");
     } else {
       foundUser.journals = foundUser.journals.filter((e) => e !== id);
+      foundUser.save();
       res.json({ journals: foundUser.journals });
     }
   } catch (error) {

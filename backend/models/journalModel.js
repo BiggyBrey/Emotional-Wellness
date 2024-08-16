@@ -5,7 +5,11 @@ const journalSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
   },
-
+  //should there be a publicJournal / privateJournal model or will this variable surfice
+  private: {
+    type: Boolean,
+    required: true,
+  },
   //https://mongoosejs.com/docs/schematypes.html#dates
   //date journal made
   date: {
