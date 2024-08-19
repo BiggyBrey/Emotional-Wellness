@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const journalSchema = new mongoose.Schema({
   user: {
@@ -6,7 +6,7 @@ const journalSchema = new mongoose.Schema({
     ref: "User",
   },
   //should there be a publicJournal / privateJournal model or will this variable surfice
-  private: {
+  isPrivate: {
     type: Boolean,
     required: true,
   },
@@ -24,4 +24,4 @@ const journalSchema = new mongoose.Schema({
 });
 
 const Journal = mongoose.model("Journal", journalSchema);
-module.exports = Journal;
+export default Journal;

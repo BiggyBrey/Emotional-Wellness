@@ -1,8 +1,8 @@
-const express = require("express");
-const bcrypt = require("bcrypt");
+import express from "express";
+import bcrypt from "bcrypt";
 const router = express.Router();
 
-const User = require("../models/userModel");
+import User from "../models/userModel.js";
 
 //get a user by id
 router.get("/:id", async (req, res) => {
@@ -61,6 +61,7 @@ router.get("/", async (req, res) => {
   }
 });
 
+//move to journal router
 // get all journals from user
 // user should only be able to see all their own journals
 router.get("/journalsFrom/:uid", async (req, res) => {
@@ -78,6 +79,7 @@ router.get("/journalsFrom/:uid", async (req, res) => {
     res.status(500).send(error);
   }
 });
+//.json more flexible
 // get all discussions from user
 
 //create a user
@@ -89,7 +91,7 @@ router.post("/register", async (req, res) => {
     // Check if username already exists
     const existingUser = await User.findOne({ username });
     if (existingUser) {
-      //return prevents server from crashing?
+      //return prevents server from crashing
       return res.status(400).json({ message: "Username already exists" });
     }
 
@@ -154,12 +156,8 @@ router.put("/:id", async (req, res) => {
       { new: true }
     );
     if (!updatedUser) {
-      //create user
-      const newUser = new User({ username, hashedPassword });
-      await newUser.save();
-      res.status(201).send(newUser);
-      //or should i just return error cuz id doesnt exist
-      //res.status(404).send("User not Found")
+      //return error cuz id doesnt exist
+      res.status(404).send("User not Found");
     } else {
       res.status(200).send(updatedUser);
     }
@@ -185,4 +183,4 @@ router.delete("/:id", async (req, res) => {
   }
 });
 
-module.exports = router;
+export { router as userRouter };

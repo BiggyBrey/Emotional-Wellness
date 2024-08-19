@@ -1,9 +1,11 @@
-const express = require("express");
+import express from "express";
 const router = express.Router();
 
-//should i try to only use 1 model
-const Journal = require("../models/journalModel");
-const User = require("../models/userModel");
+import Journal from "../models/journalModel.js";
+import User from "../models/userModel.js";
+
+//middleware function to check user autho on journals
+
 //get a Journal
 router.get("/:id", async (req, res) => {
   try {
@@ -20,10 +22,10 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-//get all non private Journals
+//get all non isPrivate Journals
 router.get("/", async (req, res) => {
   try {
-    let allJournals = await Journal.find({ private: false });
+    let allJournals = await Journal.find({ isPrivate: false });
     if (allJournals.length === 0) {
       res.status(404).send("No Journals found");
     } else {
@@ -35,12 +37,11 @@ router.get("/", async (req, res) => {
   }
 });
 
-//66be2db8873f84f3cef96704
 //create a Journal
 router.post("/write", async (req, res) => {
   try {
     // Get Journal info
-    const { userID, content, private } = req.body;
+    const { userID, content, isPrivate } = req.body;
     const currentDate = new Date();
 
     // check if user exists
@@ -54,7 +55,7 @@ router.post("/write", async (req, res) => {
       user: userID,
       date: currentDate,
       content,
-      private,
+      isPrivate,
     });
     await newJournal.save();
     res.status(201).json({
@@ -78,12 +79,12 @@ router.post("/write", async (req, res) => {
 router.put("/:id", async (req, res) => {
   try {
     const id = req.params.id;
-    const { content, private } = req.body;
+    const { content, isPrivate } = req.body;
 
     // update Journal with hashed password
     const updatedJournal = await Journal.findByIdAndUpdate(
       id,
-      { content, private },
+      { content, isPrivate },
       { new: true }
     );
     if (!updatedJournal) {
@@ -114,7 +115,9 @@ router.delete("/:id", async (req, res) => {
     if (!foundUser) {
       res.status(404).send("User not Found");
     } else {
-      foundUser.journals = foundUser.journals.filter((e) => e !== id);
+      foundUser.journals = foundUser.journals.filter(
+        (journalID) => journalID !== id
+      );
       foundUser.save();
       res.json({ journals: foundUser.journals });
     }
@@ -124,4 +127,4 @@ router.delete("/:id", async (req, res) => {
   }
 });
 
-module.exports = router;
+export { router as journalRouter };
