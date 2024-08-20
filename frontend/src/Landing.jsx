@@ -70,7 +70,7 @@ const LandingPage = () => {
               <div className="bg-white p-6 rounded-lg shadow-lg">
                 <h3 className="text-xl font-bold mb-4">Ai </h3>
                 <p>
-                  Speak with Ai chatbot
+                  Adaptive AI chatbot that converse with the user.
                 </p>
               </div>
             </div>
@@ -78,16 +78,15 @@ const LandingPage = () => {
               <div className="bg-white p-6 rounded-lg shadow-lg">
                 <h3 className="text-xl font-bold mb-4">Journal Entires</h3>
                 <p>
-                  Record and reflect your days in a journal
+                  Record and reflect your days in a journal.
                 </p>
               </div>
             </div>
             <div className="w-full sm:w-1/2 md:w-1/3 p-4">
               <div className="bg-white p-6 rounded-lg shadow-lg">
-                <h3 className="text-xl font-bold mb-4">Community Support</h3>
+                <h3 className="text-xl font-bold mb-4">Mood Metrics</h3>
                 <p>
-                  Join a community of like-minded individuals who support each
-                  other's mental wellness journey.
+                  Track your mood to systematically improve your days.
                 </p>
               </div>
             </div>
