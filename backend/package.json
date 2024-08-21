@@ -3,8 +3,12 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "seed database": "doppler run node utils/seedUser.js", 
+    "start": "doppler run node server.js",
+    "dev": "doppler run nodemon server.js"
   },
   "keywords": [],
   "author": "",
