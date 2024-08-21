@@ -148,27 +148,26 @@ async function populateJournals() {
       console.error(`User ${user.username} not found`);
       continue;
     }
-
-    // Create new Journal
+    //create new journal
+    const newJournal = new Journal({
+      userID: foundUser._id,
+      entries: [],
+    });
+    await newJournal.save();
+    //add journals to entries
     for (let j = 0; j < journalCount; j++) {
       if (journalIndex >= testJournals.length) {
         console.error("Not enough journals to populate");
         return;
       }
 
-      const newJournal = new Journal({
-        user: foundUser._id,
+      newJournal.entries.push({
         date: currentDate,
         content: testJournals[journalIndex].content,
         isPrivate: testJournals[journalIndex].isPrivate,
       });
 
       await newJournal.save();
-
-      // Update user journals collection
-      foundUser.journals.push(newJournal);
-      await foundUser.save();
-
       journalIndex++;
     }
 
