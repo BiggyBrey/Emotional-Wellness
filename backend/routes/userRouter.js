@@ -4,94 +4,68 @@ const router = express.Router();
 
 import User from "../models/userModel.js";
 
-//get a user by id
+// Get a user by ID
 router.get("/:id", async (req, res) => {
   try {
-    let id = req.params.id;
-    let foundUser = await User.findById(id);
+    const id = req.params.id;
+    const foundUser = await User.findById(id);
+
     if (!foundUser) {
-      res.status(404).send("User not found");
-    } else {
-      res.status(200).send(foundUser);
+      return res.status(404).json({ message: "User not found" });
     }
+
+    res.status(200).json(foundUser);
   } catch (error) {
     if (error.kind === "ObjectId") {
       return res.status(400).json({
         message:
-          "there was a problem with the ObjectId format. Please ensure that you've entered a valid ObjectId",
-        reason: error.reason.message,
+          "Invalid ObjectId format. Please ensure you’ve entered a valid ObjectId.",
+        reason: error.reason?.message || "Unknown reason",
       });
     }
-    console.log(error);
-    res.status(500).send(error);
+
+    console.error(error);
+    res.status(500).json({ error: error.message });
   }
 });
 
-// Route to check if a username is available
+// Check if a username is available
 router.get("/check-username/:username", async (req, res) => {
   try {
     const { username } = req.params;
-
-    // Check if the username already exists
     const existingUser = await User.findOne({ username });
 
-    if (existingUser) {
-      res.status(200).json({ available: false }); // Username is not available
-    } else {
-      res.status(200).json({ available: true }); // Username is available
-    }
+    res.status(200).json({ available: !existingUser });
   } catch (error) {
-    console.error(error.message);
+    console.error("Error checking username availability: ", error.message);
     res.status(500).json({ error: "Internal server error" });
   }
 });
 
-//get all users
+// Get all users
 router.get("/", async (req, res) => {
   try {
-    let allUsers = await User.find();
+    const allUsers = await User.find();
+
     if (allUsers.length === 0) {
-      res.status(404).send("No Users found");
-    } else {
-      res.status(200).send(allUsers);
+      return res.status(404).json({ message: "No users found" });
     }
+
+    res.status(200).json(allUsers);
   } catch (error) {
-    console.log(error);
-    res.status(400).send(error);
+    console.error("Error fetching users: ", error);
+    res.status(400).json({ error: error.message });
   }
 });
 
-//move to journal router
-// get all journals from user
-// user should only be able to see all their own journals
-router.get("/journalsFrom/:uid", async (req, res) => {
-  try {
-    const userID = req.params.uid;
-
-    const foundUser = await User.findById(userID).populate("journals");
-    if (!foundUser) {
-      res.status(404).send("User not found");
-    } else {
-      res.status(200).json(foundUser.journals);
-    }
-  } catch (error) {
-    console.log(error);
-    res.status(500).send(error);
-  }
-});
-//.json more flexible
-// get all discussions from user
-
-//create a user
+// Register a new user
 router.post("/register", async (req, res) => {
   try {
-    // Get user info
     const { username, password } = req.body;
 
     // Check if username already exists
     const existingUser = await User.findOne({ username });
     if (existingUser) {
-      //return prevents server from crashing
       return res.status(400).json({ message: "Username already exists" });
     }
 
@@ -99,22 +73,21 @@ router.post("/register", async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    // Create new user
+    // Create and save the new user
     const newUser = new User({ username, password: hashedPassword });
     await newUser.save();
-    //res.send vs res.json standard?
-    res
-      .status(201)
-      .json({ message: "User registered successfully", user: newUser });
-    // res.status(201).send(newUser);
+
+    res.status(201).json({
+      message: "User registered successfully",
+      user: newUser,
+    });
   } catch (error) {
-    console.log("error" + error);
+    console.error("Error registering user: ", error);
     res.status(500).json({ error: error.message });
-    // res.status(400).send(error);
   }
 });
 
-// Route for User to Login
+// User login
 router.post("/login", async (req, res) => {
   try {
     const { username, password } = req.body;
@@ -130,56 +103,58 @@ router.post("/login", async (req, res) => {
     if (!validPassword) {
       return res.status(400).json({ message: "Invalid username or password" });
     }
-    // send the user id
-    return res
+
+    res
       .status(200)
       .json({ message: "Logged in successfully", userId: foundUser._id });
   } catch (error) {
-    return res.status(500).json({ error: error.message });
+    console.error("Error logging in user: ", error);
+    res.status(500).json({ error: error.message });
   }
 });
 
-//update user
+// Update user by ID
 router.put("/:id", async (req, res) => {
   try {
     const id = req.params.id;
     const { username, password } = req.body;
 
-    // hash new password
+    // Hash the new password
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    // update user with hashed password
+    // Update user with new details
     const updatedUser = await User.findByIdAndUpdate(
       id,
       { username, password: hashedPassword },
       { new: true }
     );
+
     if (!updatedUser) {
-      //return error cuz id doesnt exist
-      res.status(404).send("User not Found");
-    } else {
-      res.status(200).send(updatedUser);
+      return res.status(404).json({ message: "User not found" });
     }
+
+    res.status(200).json(updatedUser);
   } catch (error) {
-    console.log("error" + error);
-    res.status(400).send(error); //
+    console.error("Error updating user: ", error);
+    res.status(400).json({ error: error.message });
   }
 });
 
-//delete user
+// Delete user by ID
 router.delete("/:id", async (req, res) => {
   try {
     const id = req.params.id;
-    let foundUser = await User.findByIdAndDelete(id);
+    const foundUser = await User.findByIdAndDelete(id);
+
     if (!foundUser) {
-      res.status(404).send("User not found");
-    } else {
-      res.status(200).send("User deleted successfully");
+      return res.status(404).json({ message: "User not found" });
     }
+
+    res.status(200).json({ message: "User deleted successfully" });
   } catch (error) {
-    console.log(error);
-    res.status(500).send(error);
+    console.error("Error deleting user: ", error);
+    res.status(500).json({ error: error.message });
   }
 });
 
