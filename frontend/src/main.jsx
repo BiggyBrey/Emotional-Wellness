@@ -3,8 +3,43 @@ import { createRoot } from 'react-dom/client'
 import App from './App.jsx'
 import './index.css'
 
+//import all the components
+
+import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+
+const router = createBrowserRouter([
+  {
+    //landing page
+    path: '/',
+    element: <App />
+  },
+  // login and signup and dashboard are accessible through landing page
+  {
+    path: '/login',
+    element: <Login />
+  },
+  {
+    path: '/signUp',
+    element: <SignUp />
+  },
+  {
+    path: '/dashboard',
+    element: <DashboardPage />
+  },
+  // journal and settings are accessible through dashboard
+  {
+    path: '/journal',
+    element: <JournalPage />
+  },
+  {
+    path: '/settings',
+    element: <SettingsPage />
+  }
+
+])
+
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <App />
+    <RouterProvider router={router}></RouterProvider>
   </StrictMode>,
 )
