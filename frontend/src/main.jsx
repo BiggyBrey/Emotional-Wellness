@@ -2,6 +2,7 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import App from './App.jsx'
 import './index.css'
+import Dashboard from './Dashboard.jsx'
 
 //import all the components
 
@@ -15,25 +16,25 @@ const router = createBrowserRouter([
   },
   // login and signup and dashboard are accessible through landing page
   {
-    path: '/login',
-    element: <Login />
-  },
-  {
-    path: '/signUp',
-    element: <SignUp />
+  //   path: '/login',
+  //   element: <Login />
+  // },
+  // {
+  //   path: '/signUp',
+  //   element: <SignUp />
   },
   {
     path: '/dashboard',
-    element: <DashboardPage />
+    element: <Dashboard />
   },
   // journal and settings are accessible through dashboard
   {
-    path: '/journal',
-    element: <JournalPage />
+    // path: '/journal',
+    // element: <JournalPage />
   },
   {
-    path: '/settings',
-    element: <SettingsPage />
+    // path: '/settings',
+    // element: <SettingsPage />
   }
 
 ])
