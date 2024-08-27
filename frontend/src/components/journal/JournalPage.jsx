@@ -2,7 +2,9 @@ import { useEffect, useState } from "react"
 import "./journalstyle.css"
 import { createJournal, updateJournal } from "../../services/api"
 export default function JournalPage() {
+    const [isUpdate, setIsUpdate] = useState(false)
     const date = new Date() //get todays date
+    const [EntryID, setEntryID] = useState("")
     const [NewEntry, setNewEntry] = useState({
         userID: "66c65b7655e7bc5a73439ff0",
         title: `${date.toDateString()} Entry`,
@@ -13,16 +15,27 @@ export default function JournalPage() {
     })
 
     const handleUpdateJournal = async () => {
-
+        if (!NewEntry.content) return;
+        await updateJournal(NewEntry.userID, EntryID, NewEntry)
+        alert("journal updated")
     }
     const handleCreateJournal = async () => {
-        if (!NewEntry.content) return
-        await createJournal(NewEntry)
+        if (!NewEntry.content) return;
+        const newJournal = await createJournal(NewEntry)
+        alert("journal made");
+        setIsUpdate(true)
+        let length = newJournal.data.Journal.entries.length - 1
+        setEntryID(newJournal.data.Journal.entries[length]._id)
     }
     const handleInputChange = (e) => {
         const { name, value } = e.target
         setNewEntry({ ...NewEntry, [name]: value })
-        console.log(e.target)
+
+    }
+    const handleCheckboxChange = (e) => {
+        const { name, checked } = e.target
+        setNewEntry({ ...NewEntry, [name]: checked })
+
     }
 
     return (
@@ -30,7 +43,20 @@ export default function JournalPage() {
             <div className="container">
 
                 <header>
+                    <div className="form-control">
+
+                        <label className="cursor-pointer label flex justify-end gap-4">
+                            <span className="label-text">Hidden</span>
+                            <div className="tooltip" data-tip="Check to hide journal entry">
+                                <input type="checkbox" name="isPrivate" onChange={handleCheckboxChange} value={NewEntry.isPrivate} className="checkbox checkbox-accent" />
+                            </div>
+
+                        </label>
+
+
+                    </div>
                     <h1>My Personal Journal</h1>
+
                     <h2>
                         <input className="input text-lg bg-inherit" placeholder="enter your own title" name="title" value={NewEntry.title} onChange={handleInputChange} type="text" />
                     </h2>
@@ -52,7 +78,11 @@ export default function JournalPage() {
                     {/* potential personal sign off */}
                     <p>Created with love.</p>
                 </footer>
-                <button onClick={handleCreateJournal} className="btn btn-ghost">Submit</button>
+                {
+                    isUpdate ? <button onClick={handleUpdateJournal} className="btn btn-ghost">Update</button> : <button onClick={handleCreateJournal} className="btn btn-ghost">Submit</button>
+
+                }
+
             </div >
 
         </>
