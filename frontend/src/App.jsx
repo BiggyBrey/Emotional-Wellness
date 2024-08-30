@@ -1,13 +1,15 @@
 import './App.css'
 import Landing from './Landing'
-import landingScrolling from './landingLogic'
+
+import { Outlet } from 'react-router-dom'
 
 function App() {
 
   return (
     <>
-    <Landing/>
-    <landingScrolling/>
+    
+    
+    <Outlet/>
     </>
   )
 }
