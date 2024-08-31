@@ -32,7 +32,7 @@ export default function JournalDisplay() {
                         <input type="text" value={searchText} onChange={handleFilter} className="grow" placeholder="Search" />
                     </label>
                 </div>
-                <Link to="/journal/write">
+                <Link to="/write">
                     <button className="btn ml-2 btn-outline mt-4">New</button>
                 </Link>
             </div>

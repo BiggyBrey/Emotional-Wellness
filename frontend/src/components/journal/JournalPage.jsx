@@ -8,42 +8,49 @@ export default function JournalPage() {
     //context localstorage, session, url, 
     const location = useLocation();
     const entry = location.state;
-
     const [isUpdate, setIsUpdate] = useState(
         () => {
-            entry ? true : false
+            return entry ? true : false
         }
     )
     const date = new Date() //get todays date
     const [EntryID, setEntryID] = useState(() => {
         //if entry exists or updating
-        entry ? entry._id : ""
+        return entry ? entry._id : ""
 
     })
-    const [NewEntry, setNewEntry] = useState(
-        () => {
-            //entry exists/ updating
-            if (entry) {
-                return {
-                    userID: "66c65b7655e7bc5a73439ff0",
-                    title: entry.title,
-                    content: entry.content,
-                    isPrivate: entry.isPrivate,
-                    date: entry.date,
-                    aiAnalysis: entry.aiAnalysis,
-                }
-            } else {
-                return { //creating new entry
-                    userID: "66c65b7655e7bc5a73439ff0",
-                    title: `${date.toDateString()} Entry`,
-                    content: "",
-                    isPrivate: false,
-                    date: date,
-                    aiAnalysis: "",
-                }
-            }
-        }
-    )
+    const [NewEntry, setNewEntry] = useState(() => ({
+        userID: "66c65b7655e7bc5a73439ff0",
+        title: entry?.title || `${date.toDateString()} Entry`,
+        content: entry?.content || "",
+        isPrivate: entry?.isPrivate || false,
+        date: entry?.date || date,
+        aiAnalysis: entry?.aiAnalysis || "",
+    }));
+    // const [NewEntry, setNewEntry] = useState(
+    //     () => {
+    //         //entry exists/ updating
+    //         if (entry) {
+    //             return {
+    //                 userID: "66c65b7655e7bc5a73439ff0",
+    //                 title: entry.title,
+    //                 content: entry.content,
+    //                 isPrivate: entry.isPrivate,
+    //                 date: entry.date,
+    //                 aiAnalysis: entry.aiAnalysis,
+    //             }
+    //         } else {
+    //             return { //creating new entry
+    //                 userID: "66c65b7655e7bc5a73439ff0",
+    //                 title: `${date.toDateString()} Entry`,
+    //                 content: "",
+    //                 isPrivate: false,
+    //                 date: date,
+    //                 aiAnalysis: "",
+    //             }
+    //         }
+    //     }
+    // )
 
     const handleUpdateJournal = async () => {
         if (!NewEntry.content) return;
@@ -79,7 +86,7 @@ export default function JournalPage() {
                         <label className="cursor-pointer label flex justify-end gap-4">
                             <span className="label-text">Hidden</span>
                             <div className="tooltip" data-tip="Check to hide journal entry">
-                                <input type="checkbox" name="isPrivate" onChange={handleCheckboxChange} value={NewEntry.isPrivate} className="checkbox checkbox-accent" />
+                                <input type="checkbox" name="isPrivate" onChange={handleCheckboxChange} checked={NewEntry.isPrivate} className="checkbox checkbox-accent" />
                             </div>
 
                         </label>

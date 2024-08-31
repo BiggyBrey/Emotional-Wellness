@@ -20,7 +20,7 @@ export default function EntryCard(props) {
                     />
                 </div> */}
                 {/* coudl have image from smily face */}
-                <Link to={`/journal/entry/${props.entry._id}`}
+                <Link to={`/entry/${props.entry._id}`}
                     state={props.entry}>
                     <div className="lg:flex items-center justify-between">
                         {props.entry.title && <div className="shadow-xl p-1 my-2 bg-slate-50 rounded-md ">
