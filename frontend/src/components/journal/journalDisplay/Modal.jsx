@@ -1,0 +1,60 @@
+import React, { useState } from 'react';
+
+export default function Modal(props) {
+    const [isOpen, setIsOpen] = useState(false);
+
+    const userID = "66c65b7655e7bc5a73439ff0"
+    const openModal = () => setIsOpen(true);
+    const closeModal = () => setIsOpen(false);
+
+    const handleDelete = () => {
+        props.handleDeleteEntry(userID, props.entryID);
+        alert(`deleted ${props.entryTitle} with id ${props.entryID}`)
+        closeModal(); // Close the modal after deleting
+    };
+
+    return (
+        <>
+            <button
+                onClick={openModal}
+                className="btn btn-square btn-sm">
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-6 w-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+
+            {/* Modal */}
+            {isOpen && (
+                <dialog open className="modal modal-bottom sm:modal-middle">
+                    <div className="modal-box">
+                        <h3 className="font-bold text-lg">Hello! Are you sure you want to delete:</h3>
+                        <h3 className="font-bold text-lg">{props.entryTitle}</h3>
+                        <p className="py-4">Press ESC key or click the cancel button to close</p>
+                        <div className="modal-action flex justify-between">
+                            <form className="flex w-full justify-between" method="dialog">
+                                <button
+                                    type="button"
+                                    onClick={handleDelete}
+                                    className="btn text-red-600">Delete</button>
+                                {/* If there's a button in form, it will close the modal */}
+                                <button
+                                    type="button"
+                                    onClick={closeModal}
+                                    className="btn">Cancel</button>
+                            </form>
+                        </div>
+                    </div>
+                </dialog>
+            )}
+        </>
+    );
+}
