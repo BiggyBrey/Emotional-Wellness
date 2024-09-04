@@ -1,11 +1,11 @@
-import { StrictMode } from "react";
-import { createRoot } from "react-dom/client";
-import App from "./App.jsx";
-import "./index.css";
-import LoginPage from "./LoginPage.jsx";
-import SignUp from "./SignUp.jsx"
+import { StrictMode } from 'react'
+import { createRoot } from 'react-dom/client'
+import App from './App.jsx'
+import './index.css'
+import LoginPage from './LoginPage.jsx'
+import SignUp from './SignUp.jsx'
+import AiChat from './AiChatBot.jsx'
 import Landing from "./Landing.jsx"
-
 
 //import all the components
 
