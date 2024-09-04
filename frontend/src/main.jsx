@@ -8,6 +8,8 @@ import AiChat from './AiChatBot.jsx'
 import Landing from "./Landing.jsx"
 import JournalPage from "./components/journal/JournalPage.jsx";
 import JournalDisplay from "./components/journal/journalDisplay/JournalDisplay.jsx";
+import ChatBot from './components/ChatBot';
+import Quiz from './components/Quiz';
 
 //import all the components
 
@@ -31,6 +33,10 @@ const router = createBrowserRouter(
       {/* <Route path='dashboard' element={<Dashboard/>}/> */}
       <Route path='signup' element={<SignUp />} />
       {/* <Route path='settings' element={<Settings/>}/> */}
+       <Route path="/" element={<ChatBot />} />
+       {/* <Route path='Chatbot' element={<ChatBot/>}/> */}
+       <Route path="/quiz" element={<Quiz />} />
+       {/* <Route path='AiQuiz' element={<AiQuiz/>}/> */}
     </Route>
   )
   // {
