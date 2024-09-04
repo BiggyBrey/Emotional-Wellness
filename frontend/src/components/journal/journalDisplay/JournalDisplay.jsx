@@ -66,8 +66,8 @@ export default function JournalDisplay() {
                                 </svg>
                             </div>
                             <div className={index % 2 === 0 ? "timeline-start mb-10 md:text-end" : "timeline-end mb-10 md:text-start"}>
-                                {/* <time className="font-mono italic">{new Date(entry.date).toLocaleDateString()}</time>
-                                <div className="text-lg font-black">{entry.title}</div>
+                                <time className="font-mono italic">{new Date(entry.date).toLocaleDateString()}</time>
+                                {/* <div className="text-lg font-black">{entry.title}</div>
                                 <div>{entry.content}</div> */}
                                 {/* ... continue on content after number of chars */}
                                 <EntryCard entry={entry}

@@ -10,11 +10,11 @@ export default function EntryCard(props) {
     convertDate(props.entry.date)
     return (
         <>
-            <div>
+            {/* <div>
                 <time className="font-mono italic">{new Date(props.entry.date).toLocaleDateString()}</time>
                 <div className="text-lg font-black">{props.entry.title}</div>
                 <div>{props.entry.content}</div>
-            </div>
+            </div> */}
 
             <div className="card bg-base-200 shadow-xl ">
                 <div className="card-actions justify-end ">
