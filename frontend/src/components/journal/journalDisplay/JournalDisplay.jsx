@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
-import { getJournalById } from "../../../services/api"
+import { deleteEntry, getJournalById } from "../../../services/api"
 import EntryCard from "./EntryCard";
 import { Link } from "react-router-dom";
+// import Navbar from ""
 
 export default function JournalDisplay() {
     const [journal, setJournal] = useState({ entries: [] });
@@ -24,8 +25,17 @@ export default function JournalDisplay() {
         setSearchText(value);
     };
 
+    const handleDeleteEntry = async (userID, EntryID) => {
+        await deleteEntry(userID, EntryID);
+        await fetchJournal();
+        //filters out the deleted students
+        // setFilteredStudents(students.filter(student => student._id !== id))
+
+    }
+
     return (
         <>
+            {/* <Navbar /> */}
             <div className="flex">
                 <div className="flex-1">
                     <label className="input input-bordered flex items-center my-4 gap-2">
@@ -37,7 +47,43 @@ export default function JournalDisplay() {
                 </Link>
             </div>
 
-            <ul>
+            <ul className="timeline timeline-snap-icon max-md:timeline-compact timeline-vertical">
+                {journal.entries
+                    .filter(entry => entry.content.toLowerCase().includes(searchText.toLowerCase()))
+                    .map((entry, index) => (
+                        < li key={entry._id} >
+                            {index !== 0 && <hr />}
+                            <div className="timeline-middle">
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 20 20"
+                                    fill="currentColor"
+                                    className="h-5 w-5">
+                                    <path
+                                        fillRule="evenodd"
+                                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"
+                                        clipRule="evenodd" />
+                                </svg>
+                            </div>
+                            <div className={index % 2 === 0 ? "timeline-start mb-10 md:text-end" : "timeline-end mb-10 md:text-start"}>
+                                {/* <time className="font-mono italic">{new Date(entry.date).toLocaleDateString()}</time>
+                                <div className="text-lg font-black">{entry.title}</div>
+                                <div>{entry.content}</div> */}
+                                {/* ... continue on content after number of chars */}
+                                <EntryCard entry={entry}
+                                    handleDeleteEntry={handleDeleteEntry}
+                                />
+                            </div>
+                            <hr />
+                        </li>
+
+                    ))
+                    .reverse()
+                    // .sort((a, b) => new Date(b.date) - new Date(a.date)) // Sort by date
+                }
+            </ul >
+
+            {/* <ul>
                 {journal.entries
                     .filter(entry => entry.content.toLowerCase().includes(searchText.toLowerCase()))
                     .map((entry) => (
@@ -46,7 +92,7 @@ export default function JournalDisplay() {
                         </li>
                     ))
                     .reverse()}
-            </ul>
+            </ul> */}
         </>
     );
 }

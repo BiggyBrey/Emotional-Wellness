@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 //css doesnt work on refresh?
 import "./journalstyle.css"
+// import Navbar from ""
 import { createJournal, updateJournal } from "../../services/api"
 import { useLocation } from "react-router-dom"
 export default function JournalPage() {
@@ -78,6 +79,7 @@ export default function JournalPage() {
 
     return (
         <>
+            {/* <Navbar /> */}
             <div className="container">
 
                 <header>
