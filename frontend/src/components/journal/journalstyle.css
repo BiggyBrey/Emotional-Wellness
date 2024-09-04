@@ -1,0 +1,136 @@
+html {
+    height: 100%;
+}
+
+textarea {
+    border: 1px solid #EEEEEE;
+    box-shadow: 1px 1px 0 #DDDDDD;
+    display: block;
+    font-family: 'Marck Script', cursive;
+    font-size: 22px;
+    line-height: 50px;
+    margin: 2% auto;
+    padding: 11px 20px 0 80px;
+    resize: none;
+    height: 689px;
+
+    background-image: -moz-linear-gradient(top, transparent, transparent 49px, #E7EFF8 0px), -moz-radial-gradient(4% 50%, circle closest-corner, #f5f5f5, #f5f5f5 39%, transparent 0%), -moz-radial-gradient(3.9% 46%, circle closest-corner, #CCCCCC, #CCCCCC 43.5%, transparent 0%);
+    background-image: -webkit-linear-gradient(top, transparent, transparent 49px, #E7EFF8 0), -webkit-radial-gradient(4% 50%, circle closest-corner, #f5f5f5, #f5f5f5 39%, transparent 0%), -webkit-radial-gradient(3.9% 46%, circle closest-corner, #cccccc, #cccccc 43.5%, transparent 0%);
+
+    -webkit-background-size: 100% 50px;
+    background-size: 100% 50px;
+}
+
+/* chat */
+/* Apply a background color and some padding to the body */
+body {
+    font-family: 'Georgia', serif;
+    /* Elegant, readable serif font */
+    background-color: #f0e6d6;
+    /* Light cream color for a vintage feel */
+    color: #333;
+    /* Dark grey text for good contrast */
+    line-height: 1.6;
+    /* Improve readability */
+    padding: auto;
+    margin: auto;
+}
+
+/* Style the main container */
+.container {
+    background-color: #fff;
+    /* White background for the content */
+    border: 1px solid #dcdcdc;
+    /* Light gray border */
+    border-radius: 10px;
+    /* Rounded corners */
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    /* Subtle shadow */
+    margin-top: 20px;
+    margin: auto
+}
+
+/* Style the header */
+header {
+    border-bottom: 2px dashed #dcdcdc;
+    /* Divider line */
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+header h1 {
+    font-family: 'Dancing Script', cursive;
+    /* Handwritten look */
+    font-size: 2.5em;
+    margin: 0;
+    color: #6d4c41;
+    /* Warm brown color */
+}
+
+/* Style the date or subheader */
+header h2 {
+    font-family: 'Georgia', serif;
+    /* Serif for a classic look */
+    font-size: 1.2em;
+    color: #a64d2c;
+    /* Slightly different brown for contrast */
+    margin: 5px 0 0 0;
+}
+
+/* Style the main content */
+.article {
+    font-family: 'Georgia', serif;
+    /* Consistent serif font */
+    margin-bottom: 20px;
+}
+
+.article p {
+    margin-bottom: 10px;
+}
+
+/* Add styles for links */
+a {
+    color: #1e90ff;
+    /* Bright blue for links */
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* Add some padding and styling for any blockquotes */
+blockquote {
+    border-left: 4px solid #dcdcdc;
+    /* Gray left border */
+    padding-left: 15px;
+    margin: 10px 0;
+    font-style: italic;
+    color: #666;
+}
+
+/* Style for footer */
+footer {
+    border-top: 2px dashed #dcdcdc;
+    /* Divider line */
+    padding-top: 10px;
+    margin-top: 20px;
+    font-size: 0.9em;
+    color: #666;
+    text-align: center;
+}
+
+/* Add a decorative touch */
+hr {
+    border: 0;
+    border-top: 1px dashed #dcdcdc;
+    margin: 20px 0;
+}
+
+.notebook-wrapper {
+    position: relative;
+    display: inline-block;
+    width: 80%;
+    max-width: 800px;
+}
