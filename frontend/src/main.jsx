@@ -5,6 +5,7 @@ import './index.css'
 import LoginPage from './LoginPage.jsx'
 import SignUp from './SignUp.jsx'
 import AiChat from './AiChatBot.jsx'
+import ChatBot from './components/ChatBot.jsx'
 import Landing from "./Landing.jsx"
 import JournalPage from "./components/journal/JournalPage.jsx";
 import JournalDisplay from "./components/journal/journalDisplay/JournalDisplay.jsx";
@@ -27,6 +28,7 @@ const router = createBrowserRouter(
       <Route path="write" element={<JournalPage />} />
       <Route path="entry/:id" element={<JournalPage />} />
       <Route path='login' element={<LoginPage />} />
+      <Route path='chatbot' element={<ChatBot />} />
       {/* <Route path='quiz' element={<Quiz/>}/> */}
       {/* <Route path='dashboard' element={<Dashboard/>}/> */}
       <Route path='signup' element={<SignUp />} />
