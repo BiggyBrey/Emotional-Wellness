@@ -1,15 +1,16 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import App from './App.jsx'
+import { requireAuth } from './services/UserAuth.jsx'
 import './index.css'
-import LoginPage from './LoginPage.jsx'
+import LoginPage, { loader as loginLoader, action as loginAction } from './LoginPage.jsx'
 import SignUp from './SignUp.jsx'
 import AiChat from './AiChatBot.jsx'
 import ChatBot from './components/ChatBot.jsx'
 import Landing from "./Landing.jsx"
 import JournalPage from "./components/journal/JournalPage.jsx";
-import JournalDisplay from "./components/journal/journalDisplay/JournalDisplay.jsx";
-import Dashboard from "./Dashboard.jsx"
+import JournalDisplay, { loader as journalLoader } from "./components/journal/journalDisplay/JournalDisplay.jsx";
+import Dashboard, { loader as dashboardLoader } from "./Dashboard.jsx"
 //import all the components
 
 import {
@@ -24,13 +25,34 @@ const router = createBrowserRouter(
     <Route path="/" element={<App />}>
       <Route index loader={() => redirect("/landing")} />
       <Route path="landing" element={<Landing />} />
-      <Route path="journals" element={<JournalDisplay />} />
+      <Route
+        path="journals"
+        element={<JournalDisplay />}
+        loader={journalLoader}
+        errorElement={<h1>There was an error</h1>}
+      />
       <Route path="write" element={<JournalPage />} />
-      <Route path="entry/:id" element={<JournalPage />} />
-      <Route path='login' element={<LoginPage />} />
-      <Route path='chatbot' element={<ChatBot />} />
+      <Route
+        path="entry/:id"
+        element={<JournalPage />}
+        loader={async () => await requireAuth()} />
+      <Route
+        path='login'
+        element={<LoginPage />}
+        loader={loginLoader}
+        action={loginAction}
+      />
+      <Route
+        path='chatbot'
+        element={<ChatBot />}
+        loader={async () => await requireAuth()}
+      />
       {/* <Route path='quiz' element={<Quiz/>}/> */}
-      <Route path='dashboard' element={<Dashboard/>}/>
+      <Route
+        path='dashboard'
+        element={<Dashboard />}
+        loader={dashboardLoader}
+      />
       <Route path='signup' element={<SignUp />} />
       {/* <Route path='settings' element={<Settings/>}/> */}
     </Route>
