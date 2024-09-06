@@ -1,8 +1,8 @@
-import "./App.css";
-import { Link } from "react-router-dom";
-import Landing from "./Landing";
-import landingScrolling from "./landingLogic";
-import { useEffect } from "react";
+import './App.css'
+import Landing from './Landing'
+
+import { Outlet } from 'react-router-dom'
+
 function App() {
   
     useEffect(() => {
@@ -19,11 +19,9 @@ function App() {
   
   return (
     <>
-      <button>
-        <Link to="/Dashboard">Dashboard Link</Link>
-      </button>
-      <Landing />
     
+    
+    <Outlet/>
     </>
   );
 }

@@ -1,6 +1,8 @@
 import React from "react";
+import landingScrolling from "./landingLogic";
 
 const LandingPage = () => {
+  landingScrolling()
   return (
     <div className="bg-gray-100 text-gray-800">
       {/* Header */}

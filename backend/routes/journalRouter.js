@@ -71,8 +71,7 @@ router.get("/", async (req, res) => {
 // Create a new Journal entry
 router.post("/write", async (req, res) => {
   try {
-    const { userID, content, isPrivate } = req.body;
-    const currentDate = new Date();
+    const { userID, title, content, isPrivate, date } = req.body;
 
     // Check if the user exists
     const foundUser = await User.findById(userID);
@@ -87,7 +86,8 @@ router.post("/write", async (req, res) => {
         userID: foundUser._id,
         entries: [
           {
-            date: currentDate,
+            title,
+            date,
             content,
             isPrivate,
           },
@@ -102,7 +102,8 @@ router.post("/write", async (req, res) => {
     } else {
       //journal doc exists add a new entry
       foundJournal.entries.push({
-        date: currentDate,
+        title,
+        date,
         content,
         isPrivate,
       });
@@ -125,7 +126,7 @@ router.put("/:userID/:entryID", async (req, res) => {
   try {
     const userID = req.params.userID;
     const entryID = req.params.entryID;
-    const { content, isPrivate } = req.body;
+    const { title, content, isPrivate } = req.body;
 
     //check if user exists
     const foundUser = await User.findById(userID);
@@ -146,6 +147,7 @@ router.put("/:userID/:entryID", async (req, res) => {
     }
 
     //update specific entry
+    foundEntry.title = title;
     foundEntry.content = content;
     foundEntry.isPrivate = isPrivate;
 

@@ -111,16 +111,6 @@ export const deleteJournal = (userID) =>
   axios.delete(`${API_URL}/journals/${userID}`);
 
 /**
- * Deletes a specific entry from a journal.
- *
- * @param {String} userID - The ID of the user whose journal entry is to be deleted.
- * @param {String} entryID - The ID of the entry to be deleted.
- * @returns {Promise} - A promise that resolves to the response from the server confirming the deletion.
- */
-export const deleteEntry = (userID, entryID) =>
-  axios.delete(`${API_URL}/${userID}/${entryID}`);
-
-/**
  * Deletes multiple entries from a journal in a batch operation.
  *
  * @param {String} userID - The ID of the user whose journal entries are to be deleted.
@@ -129,6 +119,16 @@ export const deleteEntry = (userID, entryID) =>
  *                       The array shows all entries that did not exist and failed to delete. Shows the journal doc, seeing all remaining entries.
  */
 export const deleteBatch = (userID, entryIDs) =>
-  axios.delete(`${API_URL}/batch/${userID}`, { data: { entryIDs } });
+  axios.delete(`${API_URL}/journals/batch/${userID}`, { data: { entryIDs } });
+
+/**
+ * Deletes a specific entry from a journal.
+ *
+ * @param {String} userID - The ID of the user whose journal entry is to be deleted.
+ * @param {String} entryID - The ID of the entry to be deleted.
+ * @returns {Promise} - A promise that resolves to the response from the server confirming the deletion.
+ */
+export const deleteEntry = (userID, entryID) =>
+  axios.delete(`${API_URL}/journals/${userID}/${entryID}`);
 
 //#endregion

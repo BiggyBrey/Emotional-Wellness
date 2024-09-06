@@ -37,6 +37,17 @@ const userSchema = new mongoose.Schema({
   //   },
   // ],
 });
+/*
+Plan for ai chatbot
+backend
+create chatbot convo model
+add crud routes for convos so user can see old convos
+
+frontend
+ui
+implement api calls to frontend ui
+
+*/
 
 const User = mongoose.model("User", userSchema);
 export default User;
