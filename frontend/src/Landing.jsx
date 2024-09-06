@@ -2,7 +2,7 @@ import React from "react";
 import landingScrolling from "./landingLogic";
 
 const LandingPage = () => {
-  landingScrolling()
+  landingScrolling();
   return (
     <div className="bg-gray-100 text-gray-800">
       {/* Header */}
@@ -33,6 +33,12 @@ const LandingPage = () => {
               className="text-gray-600 mx-4 hover:text-green-500"
             >
               Contact
+            </a>
+            <a
+              href=""
+              className="text-gray-600 mx-4 hover:text-green-500"
+            >
+              Dashboard
             </a>
           </nav>
         </div>
