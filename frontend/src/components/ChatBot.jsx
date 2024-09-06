@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ChevronRight, Send } from 'lucide-react';
-import { Alert, AlertIcon, AlertTitle, AlertDescription } from '@chakra-ui/react';
+// import { Alert, AlertIcon, AlertTitle, AlertDescription } from '@chakra-ui/react';
 const nudePalette = {
   background: '#F3E5DC',
   primary: '#D2B48C',

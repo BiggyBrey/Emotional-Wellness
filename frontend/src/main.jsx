@@ -9,7 +9,7 @@ import ChatBot from './components/ChatBot.jsx'
 import Landing from "./Landing.jsx"
 import JournalPage from "./components/journal/JournalPage.jsx";
 import JournalDisplay from "./components/journal/journalDisplay/JournalDisplay.jsx";
-
+import Dashboard from "./Dashboard.jsx"
 //import all the components
 
 import {
@@ -30,7 +30,7 @@ const router = createBrowserRouter(
       <Route path='login' element={<LoginPage />} />
       <Route path='chatbot' element={<ChatBot />} />
       {/* <Route path='quiz' element={<Quiz/>}/> */}
-      {/* <Route path='dashboard' element={<Dashboard/>}/> */}
+      <Route path='dashboard' element={<Dashboard/>}/>
       <Route path='signup' element={<SignUp />} />
       {/* <Route path='settings' element={<Settings/>}/> */}
     </Route>
