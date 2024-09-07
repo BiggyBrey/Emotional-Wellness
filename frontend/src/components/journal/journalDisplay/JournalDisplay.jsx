@@ -14,10 +14,10 @@ export async function loader() {
 
 export default function JournalDisplay() {
     //get journal from loader
-    const [journal, setJournal] = useState(useLoaderData());
+    let journal = useLoaderData()
+    // const [journal, setJournal] = useState(useLoaderData());
     const [searchText, setSearchText] = useState("")
-    //trouble with updating list on deletes
-    //let journal = useLoaderData()
+
 
     // const fetchJournal = async () => {
     //     const response = await getJournalById(userID)
