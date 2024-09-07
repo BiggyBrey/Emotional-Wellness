@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { deleteEntry, getJournalById } from "../../../services/api"
 import EntryCard from "./EntryCard";
 import { Link, useLoaderData } from "react-router-dom";
-import { requireAuth } from "../../../services/UserAuth.jsx";
+import { requireAuth, useUserAuth, UserAuthContext } from "../../../services/UserAuth.jsx";
 // idea to merge journals + journal - journals is sidebar
 
 //check for auth then get journal by userid from local storage
@@ -19,18 +19,13 @@ export default function JournalDisplay() {
     //trouble with updating list on deletes
     //let journal = useLoaderData()
 
-    //get user from use context
-    const user = useLoaderData();
-    // get user id
-    const userID = user._id
-    console.log(user._id)
-    const fetchJournal = async () => {
-        const response = await getJournalById(userID)
-        console.log(response.data)
-        //journal = response.data
-        setJournal(response.data)
+    // const fetchJournal = async () => {
+    //     const response = await getJournalById(userID)
+    //     console.log(response.data)
+    //     //journal = response.data
+    //     setJournal(response.data)
 
-    }
+    // }
     // useEffect(() => {
     //     fetchJournal();
     // }, [])
@@ -42,7 +37,9 @@ export default function JournalDisplay() {
 
     const handleDeleteEntry = async (userID, EntryID) => {
         await deleteEntry(userID, EntryID);
-        await fetchJournal();
+        //reload pg
+        window.location.reload();
+        // await fetchJournal();
         //filters out the deleted students
         // setFilteredStudents(students.filter(student => student._id !== id))
 

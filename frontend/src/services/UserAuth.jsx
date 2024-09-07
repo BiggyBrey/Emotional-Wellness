@@ -9,7 +9,7 @@ export async function requireAuth() {
   }
   return null;
 }
-const UserAuthContext = createContext();
+export const UserAuthContext = createContext();
 
 export function UserAuth({ children }) {
   const [user, setUser] = useState(null);
