@@ -2,6 +2,7 @@ import { Link } from "react-router-dom"
 import Modal from "./Modal"
 export default function EntryCard(props) {
 
+
     function convertDate(date) {
         const convertedDate = new Date(date)
         return convertedDate.toLocaleDateString();
