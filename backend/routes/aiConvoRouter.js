@@ -94,7 +94,7 @@ router.post("/chat", async (req, res) => {
     // Add the AI response to the conversation
     messages.push({ role: "assistant", content: aiResponse });
     // now messages is up to date with system + optional history + user message + ai response
-    console.log("messages : =" + messages);
+    // console.log("messages : =" + messages);
     if (!foundAiChat) {
       // Create a new AiChat document if it doesn't exist regardless of newconvo flag
       foundAiChat = new AiChat({
@@ -124,13 +124,82 @@ router.post("/chat", async (req, res) => {
       message: "Conversation updated successfully",
       AiChat: foundAiChat,
     });
-    console.log(response.data);
+    // console.log(response.data);
   } catch (error) {
     console.error("Error creating AiChat: ", error);
     res.status(500).json({ error: error.message });
   }
 });
 
+// continues a conversation with convoID, ideally not the last one.
+router.post("/chat/:convoID", async (req, res) => {
+  try {
+    const convoID = req.params.convoID;
+    const { userID, message } = req.body;
+
+    // Check if the user exists
+    const foundUser = await User.findById(userID);
+    if (!foundUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Check if AiChat document exists for this user
+    let foundAiChat = await AiChat.findOne({ userID });
+    if (!foundAiChat) {
+      return res.status(404).json({ message: "AiChat not found" });
+    }
+
+    //check if convo exists within AiChat
+    const foundConvo = foundAiChat.conversations.id(convoID);
+    if (!foundConvo) {
+      return res.status(404).json({ message: "convo not found" });
+    }
+    // get all messages from the selected conversation for context
+    const messages = foundConvo.messages;
+
+    // Add the current user message to the conversation
+    messages.push({ role: "user", content: message });
+
+    // Make the API call to OpenAI with the current conversation context
+    const response = await axios.post(
+      "https://api.openai.com/v1/chat/completions",
+      {
+        model: "gpt-4o-mini", // or 'gpt-3.5-turbo'
+        messages: messages, // Send the entire message history
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${process.env.GPTAPI_KEY}`,
+          "Content-Type": "application/json",
+          "OpenAi-Organization": process.env.ORG_KEY,
+          "OpenAi-Project": process.env.PROJ_KEY,
+        },
+      }
+    );
+
+    // Get the AI response from OpenAI
+    const aiResponse = response.data.choices[0].message.content;
+
+    // Add the AI response to the conversation
+    messages.push({ role: "assistant", content: aiResponse });
+    // now messages is up to date with system + optional history + user message + ai response
+    // set messages to selected convo messages
+    foundConvo.messages = messages;
+
+    // Save the updated AiChat document
+    await foundAiChat.save();
+
+    // Respond to the client with the updated conversation
+    res.status(200).json({
+      message: "Conversation updated successfully",
+      AiChat: foundAiChat,
+    });
+    console.log(response.data);
+  } catch (error) {
+    console.error("Error creating AiChat: ", error);
+    res.status(500).json({ error: error.message });
+  }
+});
 // maybe do batch hides/privates
 
 // props wont need since editing messages for an ai is kinda useless
