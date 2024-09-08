@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useLoaderData } from 'react-router-dom';
-import { getAiChatById } from '../services/openAiApi';
+import { getAiChatById, startAiChat } from '../services/openAiApi';
 import { requireAuth } from '../services/UserAuth';
 import { ChevronRight, Send } from 'lucide-react';
 // import { Alert, AlertIcon, AlertTitle, AlertDescription } from '@chakra-ui/react';
@@ -24,22 +24,25 @@ const ChatBot = () => {
   const [inputMessage, setInputMessage] = useState('');
   const [showQuiz, setShowQuiz] = useState(false);
   const [quizAnswers, setQuizAnswers] = useState({});
-
+  const [isNewConversation, setIsNewConversation] = useState(true)
   let AiChat = useLoaderData()
-  console.log(AiChat)
-  console.log(AiChat.conversations[0].messages[1].content)
+  let userID = JSON.parse(localStorage.getItem("userID"))
 
-  const handleSendMessage = () => {
+  const handleSendMessage = async () => {
     if (inputMessage.trim()) {
-      setMessages([...messages, { text: inputMessage, sender: 'user' }]);
+      setMessages([...messages, { content: inputMessage, role: 'user' }]);
       setInputMessage('');
-      // Simulate bot response
-      setTimeout(() => {
-        setMessages(prevMessages => [...prevMessages, {
-          text: "That's interesting! Let's dive deeper into how you're feeling today.",
-          sender: 'bot'
-        }]);
-      }, 1000);
+
+      // make call to ai api
+      const response = await startAiChat({ userID, message: inputMessage, isNewConversation })
+      //get ai response
+      const aiResponse = response.data.response
+      // make all other continued convos be the last one by default
+      setIsNewConversation(false);
+
+
+      // store ai response in messages
+      setMessages(prevMessages => [...prevMessages, aiResponse]);
     }
   };
 
@@ -55,8 +58,8 @@ const ChatBot = () => {
     setShowQuiz(false);
     // Process quiz answers here
     setMessages(prevMessages => [...prevMessages, {
-      text: "Thanks for completing the quiz! I've got some insights to share with you.",
-      sender: 'bot'
+      content: "Thanks for completing the quiz! I've got some insights to share with you.",
+      role: 'bot'
     }]);
   };
 
@@ -67,7 +70,8 @@ const ChatBot = () => {
         <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
         <div className="drawer-content flex flex-col items-center justify-center">
           {/* Page content here */}
-          <label htmlFor="my-drawer-2" className="btn btn-primary drawer-button lg:hidden">
+          {/* lg or md must chaneg here as well */}
+          <label htmlFor="my-drawer-2" className="btn btn-primary drawer-button md:hidden">
             See all Convos
           </label>
           {/* button can be in navbar/ hamburger icon if we choose, daisy ui */}
@@ -77,10 +81,10 @@ const ChatBot = () => {
             <h1 className="text-3xl font-bold mb-4 text-center text-[#8B4513]">Life Coach AI</h1>
             <div className="flex-grow overflow-auto mb-4 bg-white rounded-lg shadow-md p-4">
               {messages.map((message, index) => (
-                <div key={index} className={`mb-2 ${message.sender === 'user' ? 'text-right' : 'text-left'}`}>
-                  <span className={`inline-block p-2 rounded-lg ${message.sender === 'user' ? 'bg-[#D2B48C] text-white' : 'bg-[#A67B5B] text-white'
+                <div key={index} className={`mb-2 ${message.role === 'user' ? 'text-right' : 'text-left'}`}>
+                  <span className={`inline-block p-2 rounded-lg ${message.role === 'user' ? 'bg-[#D2B48C] text-white' : 'bg-[#A67B5B] text-white'
                     }`}>
-                    {message.text}
+                    {message.content}
                   </span>
                 </div>
               ))}
@@ -146,8 +150,16 @@ const ChatBot = () => {
 
         <div className="drawer-side">
           <label htmlFor="my-drawer-2" aria-label="close sidebar" className="drawer-overlay"></label>
-          <ul className="menu bg-base-200 text-base-content min-h-full w-80 p-4">
+
+          <ul className="menu bg-base-200 text-base-content min-h-full w-80 p-4 pt-14 relative">
             {/* Sidebar content here */}
+            <div className="absolute top-0 right-4">
+              <button className='btn btn-ghost btn-square'>
+                <svg width="18" height="18" viewBox="0 0 48 48" className="w-5 h-5" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7 42H43" stroke="currentColor" strokeWidth="4" strokeLinecap="butt" strokeLinejoin="bevel"></path><path d="M11 26.7199V34H18.3172L39 13.3081L31.6951 6L11 26.7199Z" fill="none" stroke="currentColor" strokeWidth="4" strokeLinejoin="bevel"></path></svg>
+
+              </button>
+
+            </div>
             {AiChat.conversations.map((chat, index) => (
               //display second message ( first user message as prompt)
               <li key={chat._id}><div> {chat.messages[1].content} </div></li>

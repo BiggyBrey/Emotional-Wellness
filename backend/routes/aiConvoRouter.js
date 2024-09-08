@@ -124,7 +124,8 @@ router.post("/chat", async (req, res) => {
     // Respond to the client with the updated conversation
     res.status(200).json({
       message: "Conversation updated successfully",
-      AiChat: foundAiChat,
+      // return ai response
+      response: messages[messages.length - 1],
     });
     // console.log(response.data);
   } catch (error) {
