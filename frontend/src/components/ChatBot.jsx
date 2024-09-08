@@ -39,29 +39,29 @@ const ChatBot = () => {
       setInputMessage('');
 
       let aiResponse;
-      // on pg start/ refresh or new button
-      if (isNewConversation) {
-        const response = await startAiChat({ userID, message: inputMessage, isNewConversation });
-
-        aiResponse = response.data.aiResponse
-        console.log("response :", response.data)
-        console.log("aireponse", aiResponse)
-        // Add the new conversation to the conversations list
-        const newConversation = response.data.convo;
-        setConversations(prevConversations => [...prevConversations, newConversation]);
-      }
       // on navbar convo link
       if (convoID) {
         const response = await continueAiChat(convoID, { userID, message: inputMessage })
         console.log(response.data)
         aiResponse = response.data.aiResponse
-
+        console.log("aireponse", aiResponse)
+        // on pg start/ refresh or new button
+      } else if (isNewConversation) {
+        const response = await startAiChat({ userID, message: inputMessage, isNewConversation });
+        console.log(response.data)
+        aiResponse = response.data.aiResponse
+        // Add the new conversation to the conversations list
+        const newConversation = response.data.convo;
+        setConversations(prevConversations => [...prevConversations, newConversation]);
+      } else {
+        const response = await startAiChat({ userID, message: inputMessage, isNewConversation });
+        console.log(response.data)
+        aiResponse = response.data.aiResponse
       }
+      console.log("aireponse", aiResponse)
 
       setIsNewConversation(false);
       setMessages(prevMessages => [...prevMessages, aiResponse]);
-
-
     }
   };
 
