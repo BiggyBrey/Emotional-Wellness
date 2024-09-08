@@ -6,7 +6,7 @@ import './index.css'
 import LoginPage, { loader as loginLoader, action as loginAction } from './LoginPage.jsx'
 import SignUp from './SignUp.jsx'
 import AiChat from './AiChatBot.jsx'
-import ChatBot from './components/ChatBot.jsx'
+import ChatBot, { loader as AiChatLoader } from './components/ChatBot.jsx'
 import Landing from "./Landing.jsx"
 import JournalPage from "./components/journal/JournalPage.jsx";
 import JournalDisplay, { loader as journalLoader } from "./components/journal/journalDisplay/JournalDisplay.jsx";
@@ -45,7 +45,7 @@ const router = createBrowserRouter(
       <Route
         path='chatbot'
         element={<ChatBot />}
-        loader={async () => await requireAuth()}
+        loader={AiChatLoader}
       />
       {/* <Route path='quiz' element={<Quiz/>}/> */}
       <Route
