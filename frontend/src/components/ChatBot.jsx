@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useLoaderData } from 'react-router-dom';
-import { getAiChatById, startAiChat } from '../services/openAiApi';
+import { getAiChatById, startAiChat, continueAiChat } from '../services/openAiApi';
 import { requireAuth } from '../services/UserAuth';
 import { ChevronRight, Send } from 'lucide-react';
 // import { Alert, AlertIcon, AlertTitle, AlertDescription } from '@chakra-ui/react';
@@ -38,15 +38,24 @@ const ChatBot = () => {
       setMessages([...messages, { content: inputMessage, role: 'user' }]);
       setInputMessage('');
 
-      const response = await startAiChat({ userID, message: inputMessage, isNewConversation });
-
-      const aiResponse = response.data.aiResponse
-      console.log("response :", response.data)
-      console.log("aireponse", aiResponse)
+      let aiResponse;
+      // on pg start/ refresh or new button
       if (isNewConversation) {
+        const response = await startAiChat({ userID, message: inputMessage, isNewConversation });
+
+        aiResponse = response.data.aiResponse
+        console.log("response :", response.data)
+        console.log("aireponse", aiResponse)
         // Add the new conversation to the conversations list
         const newConversation = response.data.convo;
         setConversations(prevConversations => [...prevConversations, newConversation]);
+      }
+      // on navbar convo link
+      if (convoID) {
+        const response = await continueAiChat(convoID, { userID, message: inputMessage })
+        console.log(response.data)
+        aiResponse = response.data.aiResponse
+
       }
 
       setIsNewConversation(false);
@@ -59,6 +68,7 @@ const ChatBot = () => {
   const startNewConversation = () => {
     setMessages([]);
     setIsNewConversation(true); // Make new conversation flag true
+    setConvoID("")
   };
 
   const loadConversation = (convoID) => {
@@ -66,6 +76,8 @@ const ChatBot = () => {
     if (convo) {
       setMessages(convo.messages.slice(1)); // Remove system role
     }
+    setConvoID(convoID)
+    setIsNewConversation(false)
   };
 
   const handleStartQuiz = () => {

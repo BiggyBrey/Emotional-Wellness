@@ -196,7 +196,8 @@ router.post("/chat/:convoID", async (req, res) => {
     // Respond to the client with the updated conversation
     res.status(200).json({
       message: "Conversation updated successfully",
-      AiChat: foundAiChat,
+      aiResponse: messages[messages.length - 1],
+      convo: foundConvo,
     });
     console.log(response.data);
   } catch (error) {
