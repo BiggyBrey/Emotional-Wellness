@@ -101,12 +101,14 @@ router.post("/chat", async (req, res) => {
         userID: foundUser._id,
         conversations: [
           {
+            summary: message, // make summary/prompt first message
             messages: messages,
           },
         ],
       });
     } else if (isNewConversation) {
       // If starting a new conversation, add a new conversation convo
+      foundAiChat.summary = message; // make summary/prompt first message
       foundAiChat.conversations.push({
         messages: messages,
       });
