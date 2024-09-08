@@ -149,7 +149,7 @@ const ChatBot = () => {
           <ul className="menu bg-base-200 text-base-content min-h-full w-80 p-4">
             {/* Sidebar content here */}
             {AiChat.conversations.map((chat, index) => (
-
+              //display second message ( first user message as prompt)
               <li key={chat._id}><div> {chat.messages[1].content} </div></li>
             ))}
 
