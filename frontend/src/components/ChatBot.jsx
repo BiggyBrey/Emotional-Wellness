@@ -47,8 +47,8 @@ const ChatBot = () => {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-[#F3E5DC] text-[#4A3728] p-4">
-      <h1 className="text-3xl font-bold mb-4 text-center text-[#8B4513]">Life Coach AI</h1>
+    <div className="chat-container flex flex-col h bg-[#F3E5DC] text-[#4A3728] p-4">
+      <h1 className="text-3xl font-bold mb-4 text-center text-[#8B4513]">MindCare AI</h1>
       <div className="flex-grow overflow-auto mb-4 bg-white rounded-lg shadow-md p-4">
         {messages.map((message, index) => (
           <div key={index} className={`mb-2 ${message.sender === 'user' ? 'text-right' : 'text-left'}`}>

@@ -15,15 +15,16 @@ function Dashboard() {
 
   return (
     <>
+       <div className="bottomRow">
+        <ChatBot/>
+      </div>
       <div className="midRow">
         <JournalCard />
         <Graph1>
           <LineChart />
         </Graph1>
       </div>
-      <div className="bottomRow">
-        <ChatBot/>
-      </div>
+   
       </>
       )
     }
