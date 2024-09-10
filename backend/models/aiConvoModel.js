@@ -16,6 +16,12 @@ const AiChatSchema = new mongoose.Schema({
       //   default: new mongoose.Types.ObjectId(),
       // },
       summary: String,
+      title: String,
+      isPrivate: Boolean,
+      mood: {
+        type: String,
+        required: true,
+      },
       messages: [
         {
           role: {
@@ -27,10 +33,11 @@ const AiChatSchema = new mongoose.Schema({
             type: String,
             required: true,
           },
-          timestamp: {
+          date: {
             type: Date,
             default: Date.now, // Automatically set the timestamp for each message
           },
+          favorite: Boolean,
         },
       ],
       startedAt: {

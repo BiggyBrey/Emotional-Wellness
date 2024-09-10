@@ -8,6 +8,7 @@ import SignUp from './SignUp.jsx'
 import AiChat from './AiChatBot.jsx'
 import ChatBot, { loader as AiChatLoader } from './components/ChatBot.jsx'
 import Landing from "./Landing.jsx"
+import AiJournal, { loader as AiJournalLoader } from './components/AiJournal.jsx'
 import JournalPage from "./components/journal/JournalPage.jsx";
 import JournalDisplay, { loader as journalLoader } from "./components/journal/journalDisplay/JournalDisplay.jsx";
 import Dashboard, { loader as dashboardLoader } from "./Dashboard.jsx"
@@ -19,6 +20,7 @@ import {
   createRoutesFromElements,
   Route, redirect
 } from "react-router-dom";
+
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -46,6 +48,11 @@ const router = createBrowserRouter(
         path='chatbot'
         element={<ChatBot />}
         loader={AiChatLoader}
+      />
+      <Route
+        path='aijournal'
+        element={<AiJournal />}
+        loader={AiJournalLoader}
       />
       {/* <Route path='quiz' element={<Quiz/>}/> */}
       <Route

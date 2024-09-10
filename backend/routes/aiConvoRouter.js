@@ -43,7 +43,8 @@ router.get("/:userID", async (req, res) => {
 // creates a new chat if there is no previous chat history
 router.post("/chat", async (req, res) => {
   try {
-    const { userID, message, isNewConversation } = req.body; // include the newConversation flag
+    const { userID, message, isNewConversation, mood, isPrivate, title } =
+      req.body; // include the newConversation flag
 
     // Check if the user exists
     const foundUser = await User.findById(userID);
@@ -57,7 +58,10 @@ router.post("/chat", async (req, res) => {
     // Initialize the conversation messages array
     //system should already be first line
     let messages = [
-      { role: "system", content: "You are a helpful therapist." },
+      {
+        role: "system",
+        content: `I am giving you a journal entry about my day and an emoji ${mood}. Can you give me positive constructive feedback like a therapist based on the text and emoji`,
+      },
     ];
 
     // If not starting a new conversation, load the last conversation
@@ -101,6 +105,8 @@ router.post("/chat", async (req, res) => {
         userID: foundUser._id,
         conversations: [
           {
+            title: title,
+            isPrivate: isPrivate,
             summary: message, // make summary/prompt first message
             messages: messages,
           },
@@ -109,6 +115,8 @@ router.post("/chat", async (req, res) => {
     } else if (isNewConversation) {
       // If starting a new conversation, add a new conversation convo
       foundAiChat.summary = message; // make summary/prompt first message
+      foundAiChat.title = title;
+      foundAiChat.isPrivate = isPrivate;
       foundAiChat.conversations.push({
         messages: messages,
       });
