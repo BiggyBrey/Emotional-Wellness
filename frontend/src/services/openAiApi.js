@@ -12,11 +12,11 @@ export const getAiChatById = (userID) =>
 /**
  * Creates a new AiChat entry.
  *
- * @param {Object} message - The message sent to Open AI. Expects userID, message and isNewConversation flag
+ * @param {Object} chat - The message sent to Open AI. Expects userID, message and isNewConversation flag, mood, title, isPrivate
  * @returns {Promise} - A promise that resolves to the created message object.
  */
-export const startAiChat = (message) =>
-  axios.post(`${API_URL}/aichats/chat`, message);
+export const startAiChat = (chat) =>
+  axios.post(`${API_URL}/aichats/chat`, chat);
 
 /**
  * Updates an existing AiChat entry.

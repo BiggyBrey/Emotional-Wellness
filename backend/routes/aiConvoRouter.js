@@ -18,10 +18,15 @@ router.get("/:userID", async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
     // get AiChat doc
-    const foundAiChat = await AiChat.findOne({ userID });
+    let foundAiChat = await AiChat.findOne({ userID });
     // check if AiChat exists
     if (!foundAiChat) {
-      return res.status(404).json({ message: "AiChat not found" });
+      // return res.status(404).json({ message: "AiChat not found" });
+      // for new users create for now
+      foundAiChat = new AiChat({
+        userID: userID,
+      });
+      foundAiChat.save();
     }
 
     res.status(200).json(foundAiChat);
@@ -107,6 +112,7 @@ router.post("/chat", async (req, res) => {
           {
             title: title,
             isPrivate: isPrivate,
+            mood: mood,
             summary: message, // make summary/prompt first message
             messages: messages,
           },
@@ -114,10 +120,11 @@ router.post("/chat", async (req, res) => {
       });
     } else if (isNewConversation) {
       // If starting a new conversation, add a new conversation convo
-      foundAiChat.summary = message; // make summary/prompt first message
-      foundAiChat.title = title;
-      foundAiChat.isPrivate = isPrivate;
       foundAiChat.conversations.push({
+        summary: message,
+        title: title,
+        isPrivate: isPrivate,
+        mood: mood,
         messages: messages,
       });
     } else {

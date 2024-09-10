@@ -1,6 +1,6 @@
-// user writes a journal entry + mood emoji
+// user writes a journal conversation + mood emoji
 // using mood emoji, make api call to open ai as system prompt
-// use journal entry as first message in chat
+// use journal conversation as first message in chat
 // get open ai response
 // user can continue convo if need
 // no more emojis needed for continued convos - emojis only needed for 1st per convo
@@ -9,10 +9,7 @@
 // can see the all the convos and history of each
 // cant edit messages - similar to convo
 
-import JournalPage from "./journal/JournalPage";
-import ChatBot from "./ChatBot";
-
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useLoaderData } from 'react-router-dom';
 import { getAiChatById, startAiChat, continueAiChat } from '../services/openAiApi';
 import { requireAuth } from '../services/UserAuth';
@@ -25,26 +22,39 @@ export async function loader() {
     return response.data
 }
 export default function AiJournal() {
-    // List of emojis    ☹ 😢 🥰
-    const emojis = ['😀', '😂', '😍', '🥳', '😎', '🤔', '😠', '🙌', '😐'];
 
-    // State to store the selected emoji
-    const [selectedEmoji, setSelectedEmoji] = useState(null);
 
-    // Function to handle emoji selection
-    const handleEmojiSelect = (emoji) => {
-        setSelectedEmoji(emoji);
-    };
+    let userID = JSON.parse(localStorage.getItem("userID"));
+    const date = new Date();
     // chat bot code
     const loadedAiChat = useLoaderData(); // UseLoaderData will provide the initial data
     console.log(loadedAiChat)
-    const [conversations, setConversations] = useState(loadedAiChat.conversations); // Store conversations in local state
-    const [messages, setMessages] = useState([]);
+    const [conversations, setConversations] = useState(loadedAiChat.conversations); // previous conversations - display in drawer
+    // const [conversation, setConversation] = useState()
+    const [messages, setMessages] = useState([]); // messages btwn user and ai
+    // State to store the selected emoji
+    const [selectedEmoji, setSelectedEmoji] = useState(null);
+    const [newConversation, setNewConversation] = useState(() => ({
+        userID: userID,
+        title: "", // `${date.toDateString()} conversation`,
+        mood: selectedEmoji,
+        messages: messages,
+        isPrivate: false,
+        startedAt: date,
+    }));
+
+
     const [inputMessage, setInputMessage] = useState('');
     const [isNewConversation, setIsNewConversation] = useState(true);
     const [convoID, setConvoID] = useState("");
-    let userID = JSON.parse(localStorage.getItem("userID"));
 
+    const reloadData = async () => {
+        const response = await getAiChatById(userID)
+        console.log(response.data)
+    }
+    // useEffect(() => {
+    //     reloadData()
+    // }, [conversations, messages])
     console.log("messages :", messages)
     console.log("convo :", conversations)
 
@@ -62,8 +72,10 @@ export default function AiJournal() {
                 console.log("aireponse", aiResponse)
                 // on pg start/ refresh or new button
             } else if (isNewConversation) {
-                const response = await startAiChat({ userID, message: inputMessage, isNewConversation });
+                console.log(selectedEmoji)
+                const response = await startAiChat({ userID, message: inputMessage, isNewConversation, mood: selectedEmoji });
                 console.log(response.data)
+
                 aiResponse = response.data.aiResponse
                 // Add the new conversation to the conversations list
                 const newConversation = response.data.convo;
@@ -94,129 +106,55 @@ export default function AiJournal() {
         setConvoID(convoID)
         setIsNewConversation(false)
     };
+    // List of emojis    ☹ 😢 🥰
+    const emojis = ['😀', '😂', '😍', '🥳', '😎', '🤔', '😠', '🙌', '😐'];
 
+
+
+    // Function to handle emoji selection
+    const handleEmojiSelect = (emoji) => {
+        setSelectedEmoji(emoji);
+    };
     // journal code
     //i can either pull from local storage or usecontext
     // const userID = JSON.parse(localStorage.getItem("userID"))
-
-    // //context localstorage, session, url, 
-    // const location = useLocation();
-    // const entry = location.state;
-    let entry;
-    const [isUpdate, setIsUpdate] = useState(
-        () => {
-            return entry ? true : false
-        }
-    )
-    const date = new Date() //get todays date
-    // const [EntryID, setEntryID] = useState(() => {
-    //     //if entry exists or updating
-    //     return entry ? entry._id : ""
+    // const [isUpdate, setIsUpdate] = useState(
+    //     () => {
+    //         return conversation ? true : false
+    //     }
+    // )
+    // const [conversationID, setconversationID] = useState(() => {
+    //     //if conversation exists or updating
+    //     return conversation ? conversation._id : ""
 
     // })
 
-    const [NewEntry, setNewEntry] = useState(() => ({
-        userID: userID,
-        title: entry?.title || `${date.toDateString()} Entry`,
-        content: entry?.content || "",
-        isPrivate: entry?.isPrivate || false,
-        date: entry?.date || date,
-        aiAnalysis: entry?.aiAnalysis || "",
-    }));
-    // const [NewEntry, setNewEntry] = useState(
-    //     () => {
-    //         //entry exists/ updating
-    //         if (entry) {
-    //             return {
-    //                 userID: "66c65b7655e7bc5a73439ff0",
-    //                 title: entry.title,
-    //                 content: entry.content,
-    //                 isPrivate: entry.isPrivate,
-    //                 date: entry.date,
-    //                 aiAnalysis: entry.aiAnalysis,
-    //             }
-    //         } else {
-    //             return { //creating new entry
-    //                 userID: "66c65b7655e7bc5a73439ff0",
-    //                 title: `${date.toDateString()} Entry`,
-    //                 content: "",
-    //                 isPrivate: false,
-    //                 date: date,
-    //                 aiAnalysis: "",
-    //             }
-    //         }
-    //     }
-    // )
-
     const handleUpdateJournal = async () => {
-        if (!NewEntry.content) return;
-        await updateJournal(NewEntry.userID, EntryID, NewEntry)
+        if (!newConversation.content) return;
+        await updateJournal(newConversation.userID, conversationID, newConversation)
         alert("journal updated")
     }
-    const handleCreateJournal = async () => {
-        if (!NewEntry.content) return;
-        const newJournal = await createJournal(NewEntry)
-        alert("journal made");
-        setIsUpdate(true)
-        let length = newJournal.data.Journal.entries.length - 1
-        setEntryID(newJournal.data.Journal.entries[length]._id)
-    }
+    // const handleCreateJournal = async () => {
+    //     if (!newConversation.content) return;
+    //     const newJournal = await createJournal(newConversation)
+    //     alert("journal made");
+    //     setIsUpdate(true)
+    //     let length = newJournal.data.Journal.entries.length - 1
+    //     setconversationID(newJournal.data.Journal.entries[length]._id)
+    // }
     const handleInputChange = (e) => {
         const { name, value } = e.target
-        setNewEntry({ ...NewEntry, [name]: value })
+        setnewConversation({ ...newConversation, [name]: value })
 
     }
     const handleCheckboxChange = (e) => {
         const { name, checked } = e.target
-        setNewEntry({ ...NewEntry, [name]: checked })
+        setnewConversation({ ...newConversation, [name]: checked })
 
     }
 
     return (
         <>
-            <div className="App">
-                <h1>Choose an Emoji</h1>
-
-                <div className="flex gap-4 mb-5">
-                    {emojis.map((emoji, index) => (
-                        <button
-                            key={index}
-                            className="emoji-button text-3xl bg-gray-100 "
-                            onClick={() => handleEmojiSelect(emoji)}
-                        >
-                            {emoji}
-                        </button>
-                    ))}
-                </div>
-
-                {selectedEmoji && (
-                    <div className="selected-emoji">
-                        <h2>You selected: {selectedEmoji}</h2>
-                    </div>
-                )}
-
-                <style>{`
-
-        .emoji-button {
-          font-size: 2rem;
-          padding: 10px;
-          cursor: pointer;
-          background: #f0f0f0;
-          border: 2px solid #ccc;
-          border-radius: 10px;
-          transition: background 0.2s ease;
-        }
-
-        .emoji-button:hover {
-          background: #e0e0e0;
-        }
-
-        .selected-emoji {
-          font-size: 2rem;
-          color: #333;
-        }
-      `}</style>
-            </div>
 
             <div className="drawer lg:drawer-open">
                 <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
@@ -226,6 +164,7 @@ export default function AiJournal() {
                     <label htmlFor="my-drawer-2" className="btn btn-primary drawer-button lg:hidden">
                         Open drawer
                     </label>
+
                     {/* <JournalPage /> */}
                     <div className="container">
 
@@ -234,19 +173,17 @@ export default function AiJournal() {
 
                                 <label className="cursor-pointer label flex justify-end gap-4">
                                     <span className="label-text">Hidden</span>
-                                    <div className="tooltip" data-tip="Check to hide journal entry">
-                                        <input type="checkbox" name="isPrivate" onChange={handleCheckboxChange} checked={NewEntry.isPrivate} className="checkbox checkbox-accent" />
+                                    <div className="tooltip" data-tip="Check to hide journal conversation">
+                                        <input type="checkbox" name="isPrivate" onChange={handleCheckboxChange} checked={newConversation.isPrivate} className="checkbox checkbox-accent" />
                                     </div>
 
                                 </label>
 
 
                             </div>
-                            <h1>My Personal Journal</h1>
-
-                            <h2>
-                                <input className="input text-lg bg-inherit" placeholder="enter your own title" name="title" value={NewEntry.title} onChange={handleInputChange} type="text" />
-                            </h2>
+                            <h1 className="text-3xl font-bold mb-4 text-center text-[#8B4513]">
+                                <input className="input text-lg bg-inherit" placeholder="enter your own title" name="title" value={newConversation.title} onChange={handleInputChange} type="text" />
+                            </h1>
                             {/* <h2>{date.toLocaleDateString()}</h2> */}
                             {/* <h2>{date.toLocaleString()}</h2>
                     <h2>{`${date.toDateString()}, ${date.toLocaleTimeString()}`}</h2> */}
@@ -255,26 +192,29 @@ export default function AiJournal() {
                             {/* potential inspirational quote */}
                             <blockquote>“The only limit to our realization of tomorrow is our doubts of today.”</blockquote>
                         </header>
+                        <div className="App">
+                            <h1>Choose an Emoji</h1>
 
-                        <article className="article">
-                            {/* can have diff fonts */}
-                            <textarea className=" bg-slate-100 text-slate-900 w-full h-screen" placeholder="Write your thoughts here . . ." name="content" value={NewEntry.content} onChange={handleInputChange}></textarea>
-                        </article>
+                            <div className="flex gap-4 mb-5">
+                                {emojis.map((emoji, index) => (
+                                    <button
+                                        key={index}
+                                        className="emoji-button text-3xl bg-gray-100 "
+                                        onClick={() => handleEmojiSelect(emoji)}
+                                    >
+                                        {emoji}
+                                    </button>
+                                ))}
+                            </div>
 
-                        <footer>
-                            {/* potential personal sign off */}
-                            <p>Created with love.</p>
-                        </footer>
-                        {
-                            isUpdate ? <button onClick={handleUpdateJournal} className="btn btn-ghost">Update</button> : <button onClick={handleCreateJournal} className="btn btn-ghost">Submit</button>
+                            {selectedEmoji && (
+                                <div className="selected-emoji">
+                                    <h2>You selected: {selectedEmoji}</h2>
+                                </div>
+                            )}
 
-                        }
 
-                    </div >
-
-                    {/* chats */}
-                    <div>
-                        <h1 className="text-3xl font-bold mb-4 text-center text-[#8B4513]">Life Coach AI</h1>
+                        </div>
                         <div className="flex-grow overflow-auto mb-4 bg-white rounded-lg shadow-md p-4">
                             {messages.map((message, index) => (
                                 <div key={index} className={`mb-2 ${message.role === 'user' ? 'text-right' : 'text-left'}`}>
@@ -284,23 +224,23 @@ export default function AiJournal() {
                                 </div>
                             ))}
                         </div>
-                        <div className="flex items-center">
-                            <input
-                                type="text"
-                                value={inputMessage}
-                                onChange={(e) => setInputMessage(e.target.value)}
-                                className="flex-grow p-2 rounded-l-lg border-2 border-[#D2B48C] focus:outline-none focus:border-[#8B4513]"
-                                placeholder="Type your message..."
-                            />
-                            <button
-                                onClick={handleSendMessage}
-                                className="bg-[#D2B48C] text-white p-2 rounded-r-lg hover:bg-[#8B4513] transition-colors"
-                            >
-                                <Send size={24} />
-                            </button>
-                        </div>
-                    </div>
 
+
+                        <article className="article">
+                            {/* can have diff fonts */}
+                            <textarea className=" bg-slate-100 text-slate-900 w-full h-96" placeholder="Write your thoughts here . . ." name="content" value={inputMessage} onChange={(e) => setInputMessage(e.target.value)}></textarea>
+                        </article>
+
+                        <footer>
+                            {/* potential personal sign off */}
+                            <p>Created with love.</p>
+                        </footer>
+                        {
+                            /* isUpdate ? <button onClick={handleUpdateJournal} className="btn btn-ghost">Update</button> :*/ <button onClick={handleSendMessage} className="btn btn-ghost">Submit</button>
+
+                        }
+
+                    </div >
 
                 </div>
                 <div className="drawer-side">

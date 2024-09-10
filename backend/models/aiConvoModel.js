@@ -21,6 +21,7 @@ const AiChatSchema = new mongoose.Schema({
       mood: {
         type: String,
         required: true,
+        /// why does this being required not work
       },
       messages: [
         {
