@@ -5,12 +5,14 @@ import { requireAuth } from './services/UserAuth.jsx'
 import './index.css'
 import LoginPage, { loader as loginLoader, action as loginAction } from './LoginPage.jsx'
 import SignUp from './SignUp.jsx'
-import AiChat from './AiChatBot.jsx'
-import ChatBot from './components/ChatBot.jsx'
+// import AiChat from './AiChatBot.jsx'
+import ChatBot, { loader as AiChatLoader } from './components/ChatBot.jsx'
 import Landing from "./Landing.jsx"
+import AiJournal, { loader as AiJournalLoader } from './components/AiJournal.jsx'
 import JournalPage from "./components/journal/JournalPage.jsx";
 import JournalDisplay, { loader as journalLoader } from "./components/journal/journalDisplay/JournalDisplay.jsx";
 import Dashboard, { loader as dashboardLoader } from "./Dashboard.jsx"
+import DashPage from './components/NEW-Dashboard/dashPage.jsx'
 //import all the components
 
 import {
@@ -19,6 +21,7 @@ import {
   createRoutesFromElements,
   Route, redirect
 } from "react-router-dom";
+
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -45,16 +48,22 @@ const router = createBrowserRouter(
       <Route
         path='chatbot'
         element={<ChatBot />}
-        loader={async () => await requireAuth()}
+        loader={AiChatLoader}
+      />
+      <Route
+        path='aijournal'
+        element={<AiJournal />}
+        loader={AiJournalLoader}
       />
       {/* <Route path='quiz' element={<Quiz/>}/> */}
       <Route
         path='dashboard'
-        element={<Dashboard />}
+        element={<DashPage />}
         loader={dashboardLoader}
       />
       <Route path='signup' element={<SignUp />} />
       {/* <Route path='settings' element={<Settings/>}/> */}
+      <Route path='NEW-dashboard' element={<DashPage />} />
     </Route>
   )
   // {

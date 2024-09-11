@@ -1,8 +1,8 @@
 import express from "express";
 const router = express.Router();
-import axios from "axios"
+import axios from "axios";
 
-import AiChat from "../models/aiConvoModel.js"
+import AiChat from "../models/aiConvoModel.js";
 import User from "../models/userModel.js";
 
 // Middleware function placeholder to check user authorization on AiChats
@@ -18,10 +18,15 @@ router.get("/:userID", async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
     // get AiChat doc
-    const foundAiChat = await AiChat.findOne({ userID });
+    let foundAiChat = await AiChat.findOne({ userID });
     // check if AiChat exists
     if (!foundAiChat) {
-      return res.status(404).json({ message: "AiChat not found" });
+      // return res.status(404).json({ message: "AiChat not found" });
+      // for new users create for now
+      foundAiChat = new AiChat({
+        userID: userID,
+      });
+      foundAiChat.save();
     }
 
     res.status(200).json(foundAiChat);
@@ -39,10 +44,116 @@ router.get("/:userID", async (req, res) => {
   }
 });
 
-
-// Create a new AiChat entry
+// creates a new chat if isNewConversation is true otherwise continue from last
+// creates a new chat if there is no previous chat history
 router.post("/chat", async (req, res) => {
   try {
+    const { userID, message, isNewConversation, mood, isPrivate, title } =
+      req.body; // include the newConversation flag
+
+    // Check if the user exists
+    const foundUser = await User.findById(userID);
+    if (!foundUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Check if AiChat document exists for this user
+    let foundAiChat = await AiChat.findOne({ userID });
+
+    // Initialize the conversation messages array
+    //system should already be first line
+    let messages = [
+      {
+        role: "system",
+        content: `I am giving you a journal entry about my day and an emoji ${mood}. Can you give me positive constructive feedback like a therapist based on the text and emoji.we are an intermediary therapy application and we have users who share their experiences throughout their day and challenges in their journals. This will also include emotions that will show as an animation of how they feel.  Our user require constructive feedback and solutions reinforcement like/ as a therapist. can you give a brief followup`,
+      },
+    ];
+
+    // If not starting a new conversation, load the last conversation
+    if (foundAiChat && !isNewConversation) {
+      // get all messages from the last conversation for context
+      const lastConversation =
+        foundAiChat.conversations[foundAiChat.conversations.length - 1];
+      messages = lastConversation.messages;
+    }
+
+    // Add the current user message to the conversation
+    messages.push({ role: "user", content: message });
+
+    // Make the API call to OpenAI with the current conversation context
+    const response = await axios.post(
+      "https://api.openai.com/v1/chat/completions",
+      {
+        model: "gpt-4o-mini", // or 'gpt-3.5-turbo'
+        messages: messages, // Send the entire message history
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${process.env.GPTAPI_KEY}`,
+          "Content-Type": "application/json",
+          "OpenAi-Organization": process.env.ORG_KEY,
+          "OpenAi-Project": process.env.PROJ_KEY,
+        },
+      }
+    );
+
+    // Get the AI response from OpenAI
+    const aiResponse = response.data.choices[0].message.content;
+
+    // Add the AI response to the conversation
+    messages.push({ role: "assistant", content: aiResponse });
+    // now messages is up to date with system + optional history + user message + ai response
+    // console.log("messages : =" + messages);
+    if (!foundAiChat) {
+      // Create a new AiChat document if it doesn't exist regardless of newconvo flag
+      foundAiChat = new AiChat({
+        userID: foundUser._id,
+        conversations: [
+          {
+            title: title,
+            isPrivate: isPrivate,
+            mood: mood,
+            summary: message, // make summary/prompt first message
+            messages: messages,
+          },
+        ],
+      });
+    } else if (isNewConversation) {
+      // If starting a new conversation, add a new conversation convo
+      foundAiChat.conversations.push({
+        summary: message,
+        title: title,
+        isPrivate: isPrivate,
+        mood: mood,
+        messages: messages,
+      });
+    } else {
+      // if not starting a new conversation
+      // Add the new user and AI messages to the existing (last) conversation
+      foundAiChat.conversations[foundAiChat.conversations.length - 1].messages =
+        messages;
+    }
+    // Save the updated AiChat document
+    await foundAiChat.save();
+
+    // Respond to the client with the updated conversation
+    res.status(200).json({
+      message: "Conversation updated successfully",
+      // return ai response
+      aiResponse: messages[messages.length - 1],
+      convo: foundAiChat.conversations[foundAiChat.conversations.length - 1],
+    });
+    console.log(response.data);
+  } catch (error) {
+    console.error("Error creating AiChat: ", error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// continues a conversation with convoID, ideally not the last one.
+router.post("/chat/:convoID", async (req, res) => {
+  try {
+    const convoID = req.params.convoID;
     const { userID, message } = req.body;
 
     // Check if the user exists
@@ -51,127 +162,75 @@ router.post("/chat", async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-      const response = await axios.post(
-        'https://api.openai.com/v1/chat/completions',
-        {
-          model: 'gpt-4o-mini', // or 'gpt-3.5-turbo'
-          messages: [
-            { role: 'system', content: 'You are a helpful therapist.' },
-            { role: 'user' , content : message} // Use the user's input from the request body
-          ]
-        },
-        {
-          headers: {
-            'Authorization': `Bearer ${process.env.GPTAPI_KEY}`,
-            'Content-Type': 'application/json',
-            'OpenAi-Organization' : process.env.ORG_KEY,
-            'OpenAi-Project' : process.env.PROJ_KEY
-          }
-        }
-      );
-  
-      // Send the API response back to the client
-      //res.status(200).json(response.data.choices[0].message);
-      const aiResponse = response.data.choices[0].message.content
-      //save in database
-
-
-    //check if AiChat doc exist
-    const foundAiChat = await AiChat.findOne({ userID });
+    // Check if AiChat document exists for this user
+    let foundAiChat = await AiChat.findOne({ userID });
     if (!foundAiChat) {
-      // Create a new AiChat document if it doesn't exist
-      const newAiChat = new AiChat({
-        userID: foundUser._id,
-        conversations: [
-          {
-            messages: [
-              { role: 'user', content: message }, // User's message
-              { role: 'assistant', content: aiResponse } // AI's response
-            ]
-          }
-        ]
-      });
-      //save the new chat doc
-      await newAiChat.save();
-      res.status(201).json({
-        message: "AiChat registered successfully",
-        AiChat: newAiChat,
-      });
-    } else {
-      // If AiChat document exists, add a new conversation
-      foundAiChat.conversations.push({
-        messages: [
-          { role: 'user', content: message }, // User's message
-          { role: 'assistant', content: aiResponse } // AI's response
-        ]
-      });
-      foundAiChat.save();
-      res.status(201).json({
-        message: "AiChat registered successfully",
-        AiChat: foundAiChat,
-      });
+      return res.status(404).json({ message: "AiChat not found" });
     }
+
+    //check if convo exists within AiChat
+    const foundConvo = foundAiChat.conversations.id(convoID);
+    if (!foundConvo) {
+      return res.status(404).json({ message: "convo not found" });
+    }
+    // get all messages from the selected conversation for context
+    const messages = foundConvo.messages;
+
+    // Add the current user message to the conversation
+    messages.push({ role: "user", content: message });
+
+    // Make the API call to OpenAI with the current conversation context
+    const response = await axios.post(
+      "https://api.openai.com/v1/chat/completions",
+      {
+        model: "gpt-4o-mini", // or 'gpt-3.5-turbo'
+        messages: messages, // Send the entire message history
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${process.env.GPTAPI_KEY}`,
+          "Content-Type": "application/json",
+          "OpenAi-Organization": process.env.ORG_KEY,
+          "OpenAi-Project": process.env.PROJ_KEY,
+        },
+      }
+    );
+
+    // Get the AI response from OpenAI
+    const aiResponse = response.data.choices[0].message.content;
+
+    // Add the AI response to the conversation
+    messages.push({ role: "assistant", content: aiResponse });
+    // now messages is up to date with system + optional history + user message + ai response
+    // set messages to selected convo messages
+    foundConvo.messages = messages;
+
+    // Save the updated AiChat document
+    await foundAiChat.save();
+
+    // Respond to the client with the updated conversation
+    res.status(200).json({
+      message: "Conversation updated successfully",
+      aiResponse: messages[messages.length - 1],
+      convo: foundConvo,
+    });
+    console.log(response.data);
   } catch (error) {
     console.error("Error creating AiChat: ", error);
     res.status(500).json({ error: error.message });
   }
 });
-
 // maybe do batch hides/privates
 
-// Update an existing AiChat entry by id
-router.put("/:userID/:entryID", async (req, res) => {
-  try {
-    const userID = req.params.userID;
-    const entryID = req.params.entryID;
-    const { title, content, isPrivate } = req.body;
-
-    //check if user exists
-    const foundUser = await User.findById(userID);
-    if (!foundUser) {
-      return res.status(404).json({ message: "User not found" });
-    }
-    // Find the AiChat document for the user
-    const foundAiChat = await AiChat.findOne({ userID });
-    // check if AiChat exists
-    if (!foundAiChat) {
-      return res.status(404).json({ message: "AiChat not found" });
-    }
-
-    //check if entry exists within AiChat
-    const foundEntry = foundAiChat.entries.id(entryID);
-    if (!foundEntry) {
-      return res.status(404).json({ message: "Entry not found" });
-    }
-
-    //update specific entry
-    foundEntry.title = title;
-    foundEntry.content = content;
-    foundEntry.isPrivate = isPrivate;
-
-    //save the updated AiChat entry
-    const updatedAiChat = await foundAiChat.save();
-    res.status(200).json(updatedAiChat);
-  } catch (error) {
-    //check for valid objectID
-    if (error.kind === "ObjectId") {
-      return res.status(400).json({
-        message:
-          "Invalid ObjectId format. Please ensure you’ve entered a valid ObjectId.",
-        reason: error.reason?.message || "Unknown reason",
-      });
-    }
-    console.error("Error updating AiChat: ", error);
-    res.status(400).json({ error: error.message });
-  }
-});
+// props wont need since editing messages for an ai is kinda useless
+// Update an existing AiChat convo by id
 
 // Delete a AiChat DOC by ID
 router.delete("/:userID", async (req, res) => {
   try {
     const userID = req.params.userID;
 
-    // Delete the AiChat entry
+    // Delete the AiChat convo
     const foundAiChat = await AiChat.findOneAndDelete({ userID });
 
     if (!foundAiChat) {
@@ -190,13 +249,13 @@ router.delete("/:userID", async (req, res) => {
 
 //does order matter?
 
-// delete a multiple entries from user's AiChat
+// delete a multiple conversations from user's AiChat
 router.delete("/batch/:userID", async (req, res) => {
   try {
     const userID = req.params.userID;
-    const { entryIDs } = req.body; // and array of entry ids to delete
+    const { convoIDs } = req.body; // and array of convo ids to delete
 
-    const missing_Entries = [];
+    const missing_conversations = [];
     //check if user exists
     const foundUser = await User.findById(userID);
     if (!foundUser) {
@@ -209,26 +268,26 @@ router.delete("/batch/:userID", async (req, res) => {
       return res.status(404).json({ message: "AiChat not found" });
     }
 
-    if (entryIDs.length === 0) {
+    if (convoIDs.length === 0) {
       return res
         .status(400)
-        .json({ message: " Please enter a list of EntryIDs" });
+        .json({ message: " Please enter a list of convoIDs" });
     }
-    //check if entry exists within AiChat
-    entryIDs.forEach((entry) => {
-      const foundEntry = foundAiChat.entries.id(entry.entryID);
-      if (!foundEntry) {
-        missing_Entries.push({ entryID: entry.entryID });
+    //check if convo exists within AiChat
+    convoIDs.forEach((convo) => {
+      const foundConvo = foundAiChat.conversations.id(convo.convoID);
+      if (!foundConvo) {
+        missing_conversations.push({ convoID: convo.convoID });
       } else {
-        //remove entry
-        foundAiChat.entries.pull(entry.entryID);
+        //remove convo
+        foundAiChat.conversations.pull(convo.convoID);
       }
     });
     //save AiChat
     foundAiChat.save();
     res.status(200).json({
       message: "AiChat deleted successfully",
-      missing_Entries: missing_Entries,
+      missing_conversations: missing_conversations,
       remaining_AiChat: foundAiChat,
     });
   } catch (error) {
@@ -237,11 +296,11 @@ router.delete("/batch/:userID", async (req, res) => {
   }
 });
 
-// delete a single entry from user AiChat
-router.delete("/:userID/:entryID", async (req, res) => {
+// delete a single convo from user AiChat
+router.delete("/:userID/:convoID", async (req, res) => {
   try {
     const userID = req.params.userID;
-    const entryID = req.params.entryID;
+    const convoID = req.params.convoID;
 
     //check if user exists
     const foundUser = await User.findById(userID);
@@ -255,16 +314,16 @@ router.delete("/:userID/:entryID", async (req, res) => {
       return res.status(404).json({ message: "AiChat not found" });
     }
 
-    //check if entry exists within AiChat
-    const foundEntry = foundAiChat.entries.id(entryID);
-    if (!foundEntry) {
-      return res.status(404).json({ message: "Entry not found" });
+    //check if convo exists within AiChat
+    const foundConvo = foundAiChat.conversations.id(convoID);
+    if (!foundConvo) {
+      return res.status(404).json({ message: "convo not found" });
     }
 
-    foundAiChat.entries.pull(entryID);
+    foundAiChat.conversations.pull(convoID);
     foundAiChat.save();
     res.status(200).json({
-      message: "AiChat deleted successfully",
+      message: "Ai Convo deleted successfully",
       deleted_AiChat: foundAiChat,
     });
   } catch (error) {
