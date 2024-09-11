@@ -1,10 +1,68 @@
-import { useState } from 'react';
+import { createUser, checkUsername } from "./services/api"
+import { useUserAuth } from "./services/UserAuth.jsx";
+import { useState } from "react";
+import {
+  useActionData,
+  Form,
+  Link,
+  useLoaderData,
+  redirect
+} from "react-router-dom";
+import ErrorMessage from "./components/ErrorMessage"
+
+
+export async function action({ request }) {
+  const formData = await request.formData()
+  const username = formData.get("username")
+  const password = formData.get("password")
+  const confirmPassword = formData.get("confirm-password")
+  console.log(username, password, confirmPassword)
+  try {
+    // the user enters in username passowrd and confirm pass
+    //check if username is available
+    // if available proceed otherwise stop
+    // check if confirm password = password
+    // create a suer with username and passwsord
+    //on successful sign in
+    const response = await checkUsername(username)
+    console.log(response.data)
+    //check if username available
+    if(!response.data.available){
+      console.log("username not available")
+      return "username not available"
+    }
+    //check if passwors match
+    if (password !== confirmPassword) {
+      console.log('Passwords do not match!');
+      return "Passwords do not match"
+    }
+    // create user
+    const user = await createUser({username,password})
+    console.log("user created")
+    console.log(user.data)
+    // const response = await loginUser({ username, password })
+    // console.log(response.data.userId)
+    const userID = user.data.user._id;
+    console.log(userID)
+    localStorage.setItem("userID", JSON.stringify(userID))
+
+    return redirect("/dashboard")
+    
+  }
+  catch (error) {
+    //on incorrect signin
+    return error.response?.data.message || null
+  }
+
+}
 
 export default function SignUp() {
+  const [username, setUsername]=useState("")
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
-
+  //const [errorMessage, setErrorMessage] = useState('');
+  const errorMessage = useActionData()
+  console.log(errorMessage)
   const handleSubmit = (e) => {
     e.preventDefault();
     if (password !== confirmPassword) {
@@ -27,13 +85,13 @@ export default function SignUp() {
             <p className="mt-4 text-lg leading-8 text-gray-300">
               Nostrud amet eu ullamco nisi aute in ad minim nostrud adipisicing velit quis. Duis tempor incididunt dolore.
             </p>
-            <form onSubmit={handleSubmit} className="mt-6 flex max-w-md gap-x-4 flex-col">
-              <label htmlFor="UserName" className="sr-only">
+            <Form method="post" replace className="mt-6 flex max-w-md gap-x-4 flex-col">
+              <label htmlFor="username" className="sr-only">
                 Username
               </label>
               <input
-                id="UserName"
-                name="UserName"
+                id="username"
+                name="username"
                 type="text"
                 required
                 placeholder="Enter your Username"
@@ -81,7 +139,7 @@ export default function SignUp() {
               >
                 Subscribe
               </button>
-            </form>
+            </Form>
           </div>
           <dl className="grid grid-cols-1 gap-x-8 gap-y-10 sm:grid-cols-2 lg:pt-2">
             <div className="flex flex-col items-start">
