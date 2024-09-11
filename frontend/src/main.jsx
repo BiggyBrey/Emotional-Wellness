@@ -5,13 +5,14 @@ import { requireAuth } from './services/UserAuth.jsx'
 import './index.css'
 import LoginPage, { loader as loginLoader, action as loginAction } from './LoginPage.jsx'
 import SignUp from './SignUp.jsx'
-import AiChat from './AiChatBot.jsx'
-import ChatBot, { loader as AiChatLoader } from './components/ChatBot.jsx'
+// import AiChat from './AiChatBot.jsx'
+import ChatBot from './components/ChatBot.jsx'
 import Landing from "./Landing.jsx"
 import AiJournal, { loader as AiJournalLoader } from './components/AiJournal.jsx'
 import JournalPage from "./components/journal/JournalPage.jsx";
 import JournalDisplay, { loader as journalLoader } from "./components/journal/journalDisplay/JournalDisplay.jsx";
 import Dashboard, { loader as dashboardLoader } from "./Dashboard.jsx"
+import DashPage from './components/NEW-Dashboard/dashPage.jsx'
 //import all the components
 
 import {
@@ -62,6 +63,7 @@ const router = createBrowserRouter(
       />
       <Route path='signup' element={<SignUp />} />
       {/* <Route path='settings' element={<Settings/>}/> */}
+      <Route path='NEW-dashboard' element={<DashPage />} />
     </Route>
   )
   // {
