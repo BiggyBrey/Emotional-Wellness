@@ -9,7 +9,7 @@ const DashPage = () => {
       <div className="w-full flex justify-between items-start mb-8 ">
         <div className="flex space-x-4">
           <button className="btn btn-primary btn-wide rounded-full shadow-md ">Sign up</button>
-          <button className="btn btn-secondary btn-wide rounded-full shadow-md">Login</button>
+          <button className="btn btn-secondary btn-wide rounded-full shadow-md">Log Out</button>
         </div>
         <button className="btn btn-accent btn-wide rounded-full shadow-md">Mood Metrics</button>
       </div>
