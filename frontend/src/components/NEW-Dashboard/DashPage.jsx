@@ -1,5 +1,4 @@
 import "./DashPageStyles.css";
-import AiJournal from '../AiJournal';
 
 import React, { useEffect, useState } from 'react';
 import { useLoaderData } from 'react-router-dom';
@@ -46,9 +45,9 @@ const DashPage = () => {
     setConversations(response.data.conversations)
     console.log(response.data)
   }
-  useEffect(() => {
-    reloadData()
-  }, [conversations, messages])
+  // useEffect(() => {
+  //   reloadData()
+  // }, [conversations])
   console.log("messages :", messages)
   console.log("convo :", conversations)
 
@@ -83,6 +82,7 @@ const DashPage = () => {
 
       setIsNewConversation(false);
       setMessages(prevMessages => [...prevMessages, aiResponse]);
+      await reloadData()
     }
   };
 
@@ -125,7 +125,7 @@ const DashPage = () => {
   const handleDeleteChat = async (userID, convoID) => {
     await deleteConversation(userID, convoID);
     //reload pg
-    setConversations(conversations.filter(convo => convo._id === convoID))
+    setConversations(conversations.filter(convo => convo._id !== convoID))
     setMessages([])
     // window.location.reload();
 
