@@ -65,7 +65,7 @@ router.post("/chat", async (req, res) => {
     let messages = [
       {
         role: "system",
-        content: `I am giving you a journal entry about my day and an emoji ${mood}. Can you give me positive constructive feedback like a therapist based on the text and emoji`,
+        content: `I am giving you a journal entry about my day and an emoji ${mood}. Can you give me positive constructive feedback like a therapist based on the text and emoji.we are an intermediary therapy application and we have users who share their experiences throughout their day and challenges in their journals. This will also include emotions that will show as an animation of how they feel.  Our user require constructive feedback and solutions reinforcement like/ as a therapist. can you give a brief followup`,
       },
     ];
 
@@ -143,7 +143,7 @@ router.post("/chat", async (req, res) => {
       aiResponse: messages[messages.length - 1],
       convo: foundAiChat.conversations[foundAiChat.conversations.length - 1],
     });
-    // console.log(response.data);
+    console.log(response.data);
   } catch (error) {
     console.error("Error creating AiChat: ", error);
     res.status(500).json({ error: error.message });

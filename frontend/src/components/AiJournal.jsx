@@ -14,6 +14,7 @@ import { useLoaderData } from 'react-router-dom';
 import { getAiChatById, startAiChat, continueAiChat } from '../services/openAiApi';
 import { requireAuth } from '../services/UserAuth';
 import { ChevronRight, Send } from 'lucide-react';
+import JournalHistory from './JournalHistory';
 
 //check for auth then get journal by userid from local storage
 export async function loader() {
@@ -245,7 +246,7 @@ export default function AiJournal() {
                 </div>
                 <div className="drawer-side">
                     <label htmlFor="my-drawer-2" aria-label="close sidebar" className="drawer-overlay"></label>
-                    <ul className="menu bg-base-200 text-base-content min-h-full w-80 p-4">
+                    <ul className="menu bg-base-200 text-base-content min-h-full pt-12 w-80 p-4">
                         {/* Sidebar content here */}
                         {/* display previous entries / journals */}
                         <div className="absolute top-0 right-4">
@@ -258,7 +259,9 @@ export default function AiJournal() {
                         </div>
                         {conversations.map((chat, index) => (
                             <li onClick={() => loadConversation(chat._id)} key={chat._id}>
-                                <div>{chat.messages[1].content}</div>
+                                <JournalHistory
+                                    content={chat.messages[1].content}
+                                />
                             </li>
                         ))}
                     </ul>
