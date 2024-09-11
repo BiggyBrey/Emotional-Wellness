@@ -170,8 +170,8 @@ const DashPage = () => {
 
           <div className="max-h-screen flex flex-col items-center p-4">
             {/* Top Section with 3 Oval Buttons */}
-            <div className="h-1/2 top-buttons grid w-full auto-rows-auto grid">
-              <div className="w-full flex justify-between items-start mb-8 ">
+            <div className="h-48 top-buttons grid w-full auto-rows-auto grid">
+              <div className="w-full flex justify-between items-start mb-2 ">
                 <div className="flex space-x-4">
                   <button className="btn btn-primary btn-wide rounded-full shadow-md ">Sign up</button>
                   <button className="btn btn-secondary btn-wide rounded-full shadow-md">Login</button>
@@ -183,7 +183,7 @@ const DashPage = () => {
             {/* Input Section */}
             <div className="extra-vh items-center space-x-4 relative">
 
-              <div className="flex items-center space-x-4 relative">
+              <div className="flex items-center justify-center space-x-4 relative">
                 <div>
                   {showEmoji &&
                     (< div className="flex gap-4 mb-5 absolute -top-16 right-0">
@@ -228,10 +228,10 @@ const DashPage = () => {
                 </button>
               </div>
               {/* chat/message history */}
-              <div className="flex-grow overflow-auto mb-4 mt-8 bg-white rounded-lg shadow-md p-4">
+              <div className=" flex-grow h-96 overflow-auto mb-4 mt-8 rounded-lg shadow-md p-4">
                 {messages.map((message, index) => (
                   <div key={index} className={`mb-2 ${message.role === 'user' ? 'text-right' : 'text-left'}`}>
-                    <span className={`inline-block p-2 rounded-lg ${message.role === 'user' ? 'bg-[#D2B48C] text-white' : 'bg-[#A67B5B] text-white'}`}>
+                    <span className={`inline-block p-2 max-w-full shadow-md rounded-lg ${message.role === 'user' ? 'bg-blue-500 text-white' : 'bg-sky-600 text-white'}`}>
                       {message.content}
                     </span>
                   </div>
