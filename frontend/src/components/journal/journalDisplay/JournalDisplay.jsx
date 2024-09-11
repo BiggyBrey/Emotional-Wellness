@@ -1,24 +1,34 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { deleteEntry, getJournalById } from "../../../services/api"
 import EntryCard from "./EntryCard";
-import { Link } from "react-router-dom";
-// import Navbar from ""
+import { Link, useLoaderData } from "react-router-dom";
+import { requireAuth, useUserAuth, UserAuthContext } from "../../../services/UserAuth.jsx";
+// idea to merge journals + journal - journals is sidebar
+
+//check for auth then get journal by userid from local storage
+export async function loader() {
+    await requireAuth()
+    const response = await getJournalById(JSON.parse(localStorage.getItem("userID")))
+    return response.data
+}
 
 export default function JournalDisplay() {
-    const [journal, setJournal] = useState({ entries: [] });
+    //get journal from loader
+    let journal = useLoaderData()
+    // const [journal, setJournal] = useState(useLoaderData());
     const [searchText, setSearchText] = useState("")
 
-    const userID = "66c65b7655e7bc5a73439ff0"
 
-    const fetchJournal = async () => {
-        const response = await getJournalById(userID)
-        console.log(response.data)
-        setJournal(response.data)
+    // const fetchJournal = async () => {
+    //     const response = await getJournalById(userID)
+    //     console.log(response.data)
+    //     //journal = response.data
+    //     setJournal(response.data)
 
-    }
-    useEffect(() => {
-        fetchJournal();
-    }, [])
+    // }
+    // useEffect(() => {
+    //     fetchJournal();
+    // }, [])
 
     const handleFilter = (e) => {
         const value = e.target.value;
@@ -27,7 +37,9 @@ export default function JournalDisplay() {
 
     const handleDeleteEntry = async (userID, EntryID) => {
         await deleteEntry(userID, EntryID);
-        await fetchJournal();
+        //reload pg
+        window.location.reload();
+        // await fetchJournal();
         //filters out the deleted students
         // setFilteredStudents(students.filter(student => student._id !== id))
 

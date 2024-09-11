@@ -6,9 +6,13 @@ import { createJournal, updateJournal } from "../../services/api"
 import { useLocation } from "react-router-dom"
 export default function JournalPage() {
 
+    //i can either pull from local storage or usecontext
+    const userID = JSON.parse(localStorage.getItem("userID"))
+
     //context localstorage, session, url, 
     const location = useLocation();
     const entry = location.state;
+
     const [isUpdate, setIsUpdate] = useState(
         () => {
             return entry ? true : false
@@ -21,7 +25,7 @@ export default function JournalPage() {
 
     })
     const [NewEntry, setNewEntry] = useState(() => ({
-        userID: "66c65b7655e7bc5a73439ff0",
+        userID: userID,
         title: entry?.title || `${date.toDateString()} Entry`,
         content: entry?.content || "",
         isPrivate: entry?.isPrivate || false,

@@ -3,7 +3,8 @@ import React, { useState } from 'react';
 export default function Modal(props) {
     const [isOpen, setIsOpen] = useState(false);
 
-    const userID = "66c65b7655e7bc5a73439ff0"
+    //i can either pull from local storage or usecontext
+    const userID = JSON.parse(localStorage.getItem("userID"))
     const openModal = () => setIsOpen(true);
     const closeModal = () => setIsOpen(false);
 

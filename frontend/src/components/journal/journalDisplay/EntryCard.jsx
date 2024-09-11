@@ -2,7 +2,7 @@ import { Link } from "react-router-dom"
 import Modal from "./Modal"
 export default function EntryCard(props) {
 
-    console.log(props)
+
     function convertDate(date) {
         const convertedDate = new Date(date)
         return convertedDate.toLocaleDateString();
@@ -37,7 +37,8 @@ export default function EntryCard(props) {
 
                             <div className="card-body">
                                 <time className="font-mono italic">{new Date(props.entry.date).toLocaleTimeString()}</time>
-                                {props.entry.title && <h2 className="card-title text-lg font-black">{props.entry.title} <div className="badge badge-secondary">Recent</div></h2>}
+                                <div className="badge badge-secondary">Recent</div>
+                                {props.entry.title && <h2 className="card-title text-lg font-black">{props.entry.title}</h2>}
                                 <p>{props.entry.content}</p>
                                 <div className="card-actions justify-end">
 
