@@ -5,7 +5,11 @@ export default function JournalHistory(props) {
             <div>
                 {props.mood}
                 {props.content}
-                <AiJournalModal />
+                <AiJournalModal
+                    deleteChat={props.deleteChat}
+                    convoID={props.convoID}
+                    content={props.content}
+                />
             </div>
         </>
     )
