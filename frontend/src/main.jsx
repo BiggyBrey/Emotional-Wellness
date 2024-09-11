@@ -12,7 +12,7 @@ import AiJournal, { loader as AiJournalLoader } from './components/AiJournal.jsx
 import JournalPage from "./components/journal/JournalPage.jsx";
 import JournalDisplay, { loader as journalLoader } from "./components/journal/journalDisplay/JournalDisplay.jsx";
 import Dashboard, { loader as dashboardLoader } from "./Dashboard.jsx"
-import DashPage from './components/NEW-Dashboard/dashPage.jsx'
+import DashPage, { loader as NewDashboardLoader } from './components/NEW-Dashboard/dashPage.jsx'
 //import all the components
 
 import {
@@ -59,7 +59,7 @@ const router = createBrowserRouter(
       <Route
         path='dashboard'
         element={<DashPage />}
-        loader={dashboardLoader}
+        loader={NewDashboardLoader}
       />
       <Route path='signup' element={<SignUp />} />
       {/* <Route path='settings' element={<Settings/>}/> */}

@@ -52,7 +52,7 @@ const DashPage = () => {
   console.log("convo :", conversations)
 
   const handleSendMessage = async () => {
-    if (inputMessage.trim()) {
+    if (inputMessage.trim() && (selectedEmoji || !isNewConversation)) {
       setMessages([...messages, { content: inputMessage, role: 'user' }]);
       setInputMessage('');
 
@@ -170,9 +170,7 @@ const DashPage = () => {
             </div>
 
             {/* Input Section */}
-
-
-            <div className="extra-vh flex items-center space-x-4 relative">
+            <div className="extra-vh items-center space-x-4 relative">
 
               <div className="flex items-center space-x-4 relative">
                 <div>
@@ -190,16 +188,16 @@ const DashPage = () => {
                     </div>)
                   }
 
-
                 </div>
                 <label htmlFor="my-drawer-2" className="btn btn-primary drawer-button lg:hidden">
                   See all Convos...
                 </label>
 
-                {/* daisy */}
-
                 <label className="input input-bordered text-slate-200 flex rounded-full items-center gap-2">
                   <input
+                    name="content"
+                    value={inputMessage}
+                    onChange={(e) => setInputMessage(e.target.value)}
                     type="text"
                     placeholder="Share your day and an Emoji ..."
                     className="input input-bordered input-lg grow w-96"
@@ -209,13 +207,25 @@ const DashPage = () => {
                     {selectedEmoji ? selectedEmoji : "🤔"}
                   </button>
                 </label>
-                <button className="btn btn-circle btn-primary">
+                {/* submit button */}
+                <button
+                  onClick={handleSendMessage}
+                  className="btn btn-circle btn-primary">
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="w-6 h-6">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 12h14m-7-7l7 7-7 7" />
                   </svg>
                 </button>
               </div>
-
+              {/* chat/message history */}
+              <div className="flex-grow overflow-auto mb-4 mt-8 bg-white rounded-lg shadow-md p-4">
+                {messages.map((message, index) => (
+                  <div key={index} className={`mb-2 ${message.role === 'user' ? 'text-right' : 'text-left'}`}>
+                    <span className={`inline-block p-2 rounded-lg ${message.role === 'user' ? 'bg-[#D2B48C] text-white' : 'bg-[#A67B5B] text-white'}`}>
+                      {message.content}
+                    </span>
+                  </div>
+                ))}
+              </div>
             </div>
 
 
@@ -223,10 +233,25 @@ const DashPage = () => {
         </div>
         <div className="drawer-side">
           <label htmlFor="my-drawer-2" aria-label="close sidebar" className="drawer-overlay"></label>
-          <ul className="menu bg-base-200 text-base-content min-h-full w-80 p-4">
+          <ul className="menu bg-base-200 text-base-content min-h-full pt-12 w-80 p-4">
             {/* Sidebar content here */}
-            <li><a>Sidebar Item 1</a></li>
-            <li><a>Sidebar Item 2</a></li>
+            {/* display previous entries / journals */}
+            <div className="absolute top-0 right-4">
+              <button onClick={startNewConversation} className="btn btn-ghost btn-square">
+                <svg width="18" height="18" viewBox="0 0 48 48" className="w-5 h-5" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M7 42H43" stroke="currentColor" strokeWidth="4" strokeLinecap="butt" strokeLinejoin="bevel"></path>
+                  <path d="M11 26.7199V34H18.3172L39 13.3081L31.6951 6L11 26.7199Z" fill="none" stroke="currentColor" strokeWidth="4" strokeLinejoin="bevel"></path>
+                </svg>
+              </button>
+            </div>
+            {/* journal / history */}
+            {conversations.map((chat, index) => (
+              <li onClick={() => loadConversation(chat._id)} key={chat._id}>
+                <JournalHistory
+                  content={chat.messages[1].content}
+                />
+              </li>
+            ))}
           </ul>
         </div>
       </div>
