@@ -3,7 +3,7 @@ import AiJournal from '../AiJournal';
 
 import React, { useEffect, useState } from 'react';
 import { useLoaderData } from 'react-router-dom';
-import { getAiChatById, startAiChat, continueAiChat } from "../../services/openAiApi.js";
+import { getAiChatById, startAiChat, continueAiChat, deleteConversation } from "../../services/openAiApi.js";
 import { requireAuth } from '../../services/UserAuth';
 import { ChevronRight, Send } from 'lucide-react';
 import JournalHistory from "../JournalHistory.jsx";
@@ -43,11 +43,12 @@ const DashPage = () => {
 
   const reloadData = async () => {
     const response = await getAiChatById(userID)
+    setConversations(response.data.conversations)
     console.log(response.data)
   }
-  // useEffect(() => {
-  //     reloadData()
-  // }, [conversations, messages])
+  useEffect(() => {
+    reloadData()
+  }, [conversations, messages])
   console.log("messages :", messages)
   console.log("convo :", conversations)
 
@@ -91,13 +92,14 @@ const DashPage = () => {
     setConvoID("")
   };
 
-  const loadConversation = (convoID) => {
+  const loadConversation = async (convoID) => {
     let convo = conversations.find(convo => convo._id === convoID);
     if (convo) {
       setMessages(convo.messages.slice(1)); // Remove system role
     }
     setConvoID(convoID)
     setIsNewConversation(false)
+
   };
   // List of emojis    ☹ 😢 🥰
   const emojis = ['😀', '😂', '😍', '🥳', '😎', '🤔', '😠', '🙌', '😐'];
@@ -120,6 +122,15 @@ const DashPage = () => {
   //     return conversation ? conversation._id : ""
 
   // })
+  const handleDeleteChat = async (userID, convoID) => {
+    await deleteConversation(userID, convoID);
+    //reload pg
+    setConversations(conversations.filter(convo => convo._id === convoID))
+    setMessages([])
+    // window.location.reload();
+
+
+  }
 
   const handleUpdateJournal = async () => {
     if (!newConversation.content) return;
@@ -249,6 +260,8 @@ const DashPage = () => {
               <li onClick={() => loadConversation(chat._id)} key={chat._id}>
                 <JournalHistory
                   content={chat.messages[1].content}
+                  deleteChat={handleDeleteChat}
+                  convoID={chat._id}
                 />
               </li>
             ))}
