@@ -6,7 +6,7 @@ import './index.css'
 import LoginPage, { loader as loginLoader, action as loginAction } from './LoginPage.jsx'
 import SignUp from './SignUp.jsx'
 // import AiChat from './AiChatBot.jsx'
-import ChatBot from './components/ChatBot.jsx'
+import ChatBot, { loader as AiChatLoader } from './components/ChatBot.jsx'
 import Landing from "./Landing.jsx"
 import AiJournal, { loader as AiJournalLoader } from './components/AiJournal.jsx'
 import JournalPage from "./components/journal/JournalPage.jsx";
@@ -58,7 +58,7 @@ const router = createBrowserRouter(
       {/* <Route path='quiz' element={<Quiz/>}/> */}
       <Route
         path='dashboard'
-        element={<Dashboard />}
+        element={<DashPage />}
         loader={dashboardLoader}
       />
       <Route path='signup' element={<SignUp />} />
