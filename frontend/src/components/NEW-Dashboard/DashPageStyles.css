@@ -4,6 +4,7 @@
 
 .extra-vh {
     height: 80vh;
+    opacity: 100%;
 }
 
 #root {

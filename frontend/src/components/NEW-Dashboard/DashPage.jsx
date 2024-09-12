@@ -255,7 +255,7 @@ const DashPage = () => {
 
               </div>
               {/* chat/message history */}
-              <div className=" flex-grow h-5/6 overflow-auto mb-4 mt-8 rounded-lg shadow-md p-4">
+              <div className=" flex-grow h-5/6 overflow-auto mb-4 bg-white bg-opacity-50 mt-8 rounded-lg shadow-md p-4">
                 {messages.map((message, index) => (
                   <div key={index} className={`mb-2 ${message.role === 'user' ? 'text-right' : 'text-left'}`}>
                     <span className={`inline-block p-2 max-w-full shadow-md rounded-lg ${message.role === 'user' ? 'bg-blue-500 text-white' : 'bg-sky-600 text-white'}`}>
