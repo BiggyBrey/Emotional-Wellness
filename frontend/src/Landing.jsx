@@ -1,6 +1,6 @@
 import React from "react";
 import landingScrolling from "./landingLogic";
-
+import { Link } from "react-router-dom";
 const LandingPage = () => {
   landingScrolling();
   return (
@@ -34,12 +34,12 @@ const LandingPage = () => {
             >
               Contact
             </a>
-            <a
-              href=""
+            <Link
+              to="/login"
               className="text-gray-600 mx-4 hover:text-primary"
             >
-              Dashboard
-            </a>
+              Login
+            </Link>
           </nav>
         </div>
       </header>
