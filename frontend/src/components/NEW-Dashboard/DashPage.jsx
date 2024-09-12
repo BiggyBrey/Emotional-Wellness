@@ -188,7 +188,7 @@ const DashPage = () => {
 
           <div className="max-h-screen flex flex-col items-center p-4">
             {/* Top Section with 3 Oval Buttons */}
-            <div className="text-center text-4xl font-bold">
+            <div className="text-center text-4xl font-bold text-white drop-shadow-[0_1.5px_1.5px_rgba(0,0,0,0.8)]">
               Welcome {loader.user.username} !
             </div>
 
