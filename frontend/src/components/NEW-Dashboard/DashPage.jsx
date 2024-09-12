@@ -101,8 +101,8 @@ const DashPage = () => {
     setIsNewConversation(false)
 
   };
-  // List of emojis    ☹ 😢 🥰
-  const emojis = ['😀', '😂', '😍', '🥳', '😎', '🤔', '😠', '🙌', '😐'];
+  // List of emojis    ☹   🙃 '😎','😍','😂',,
+  const emojis = ['😢', '😠', '😒', '😈',  '😐', '😴','🥰', '😀','🥳'];
 
   // Function to handle emoji selection
   const handleEmojiSelect = (emoji) => {
@@ -163,8 +163,8 @@ const DashPage = () => {
   return (
     <>
       {/* nav/bar */}
-      <div className="drawer lg:drawer-open">
-        <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
+      <div className="drawer lg:drawer-open ">
+        <input id="my-drawer-2" type="checkbox" className="drawer-toggle " />
         <div className="drawer-content flex flex-col items-center justify-center">
           {/* Page content here */}
 

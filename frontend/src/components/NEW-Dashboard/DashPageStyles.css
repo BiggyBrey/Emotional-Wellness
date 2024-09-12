@@ -7,11 +7,12 @@
 }
 
 #root {
-    background-color:rgba(139, 122, 218, 0.514);
-    box-shadow: 4px 2px 2px rgb(50,50,50);
+    background-color: rgba(139, 122, 218, 0.514);
+
 }
+
 body {
     background-color: #e5e5f7;
     opacity: 0.8;
-    background-image:  repeating-radial-gradient( circle at 0 0, transparent 0, #e5e5f7 100px ), repeating-linear-gradient( #444cf755, #444cf7 );
+    background-image: repeating-radial-gradient(circle at 0 0, transparent 0, #e5e5f7 100px), repeating-linear-gradient(#444cf755, #444cf7);
 }
