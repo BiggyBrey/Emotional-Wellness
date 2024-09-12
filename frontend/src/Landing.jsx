@@ -40,6 +40,12 @@ const LandingPage = () => {
             >
               Login
             </Link>
+            <a
+              href="#signup"
+              className="text-gray-600 mx-4 hover:text-primary"
+            >
+              Sign Up
+            </a>
           </nav>
         </div>
       </header>
@@ -165,24 +171,6 @@ const LandingPage = () => {
           </form>
         </div>
       </section>
-
-      {/* Footer */}
-      <footer className="bg-gray-800 text-gray-400 py-6">
-        <div className="container mx-auto text-center">
-          <p>&copy; 2024 MindCare. All rights reserved.</p>
-          <div className="flex justify-center space-x-4 mt-4">
-            <a href="#" className="hover:text-black">
-              Facebook
-            </a>
-            <a href="#" className="hover:text-black">
-              Twitter
-            </a>
-            <a href="#" className="hover:text-black">
-              Instagram
-            </a>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 };
