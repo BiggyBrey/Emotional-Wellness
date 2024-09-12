@@ -8,7 +8,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "seed database": "doppler run node utils/seedUser.js",
     "start": "doppler run node server.js",
-    "dev": "doppler run nodemon server.js"
+    "dev": "doppler run -p emotional-wellness-backend -c dev nodemon server.js"
+    
   },
   "keywords": [],
   "author": "",
