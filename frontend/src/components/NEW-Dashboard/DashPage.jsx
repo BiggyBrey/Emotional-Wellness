@@ -101,8 +101,8 @@ const DashPage = () => {
     setIsNewConversation(false)
 
   };
-  // List of emojis    ☹  🥰 
-  const emojis = ['😢', '😠', '😂', '😍', '🥳', '😐', '😎', '🤔', '😀'];
+  // List of emojis    ☹   🙃 '😎','😍','😂',,
+  const emojis = ['😢', '😠', '😒', '😈',  '😐', '😴','🥰', '😀','🥳'];
 
   // Function to handle emoji selection
   const handleEmojiSelect = (emoji) => {
