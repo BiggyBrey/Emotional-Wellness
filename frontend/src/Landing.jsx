@@ -1,6 +1,6 @@
 import React from "react";
 import landingScrolling from "./landingLogic";
-
+import { Link } from "react-router-dom";
 const LandingPage = () => {
   landingScrolling();
   return (
@@ -8,44 +8,56 @@ const LandingPage = () => {
       {/* Header */}
       <header className="bg-white shadow-md">
         <div className="container mx-auto p-4 flex justify-between items-center">
-          <h1 className="text-2xl font-bold text-green-500">MindCare</h1>
+          <h1 className="text-2xl font-bold text-primary">MindCare</h1>
           <nav>
             <a
               href="#about"
-              className="text-gray-600 mx-4 hover:text-green-500"
+              className="text-gray-600 mx-4 hover:text-primary"
             >
               About
             </a>
             <a
               href="#services"
-              className="text-gray-600 mx-4 hover:text-green-500"
+              className="text-gray-600 mx-4 hover:text-primary"
             >
               Services
             </a>
             <a
               href="#testimonials"
-              className="text-gray-600 mx-4 hover:text-green-500"
+              className="text-gray-600 mx-4 hover:text-primary"
             >
               Testimonials
             </a>
             <a
               href="#contact"
-              className="text-gray-600 mx-4 hover:text-green-500"
+              className="text-gray-600 mx-4 hover:text-primary"
             >
               Contact
             </a>
-            <a
-              href=""
-              className="text-gray-600 mx-4 hover:text-green-500"
+            <Link
+              to="/login"
+              className="text-gray-600 mx-4 hover:text-primary"
             >
-              Dashboard
+              Login
+            </Link>
+            <a
+              href="#signup"
+              className="text-gray-600 mx-4 hover:text-primary"
+            >
+              Sign Up
             </a>
           </nav>
         </div>
       </header>
 
       {/* Hero Section */}
-      <section className="bg-green-500 text-white py-20 text-center">
+
+      <div
+        className="hero min-h-screen"
+        style={{
+          backgroundImage: "url(https://img.daisyui.com/images/stock/photo-1507358522600-9f71e620c44e.webp)",
+        }}>
+        <div className="hero-overlay bg-opacity-60"></div>
         <div className="container mx-auto">
           <h2 className="text-4xl font-bold mb-4">
             Your Mental Wellness Journey Begins Here
@@ -53,8 +65,10 @@ const LandingPage = () => {
           <p className="text-lg">
             Discover peace, happiness, and mental clarity
           </p>
+
         </div>
-      </section>
+        <button className="btn mt-96 btn-primary">Get Started</button>
+      </div>
 
       {/* About Section */}
       <section id="about" className="py-20">
@@ -68,6 +82,7 @@ const LandingPage = () => {
           </p>
         </div>
       </section>
+
 
       {/* Services Section */}
       <section id="services" className="bg-gray-200 py-20">
@@ -134,7 +149,7 @@ const LandingPage = () => {
       {/* Contact Section */}
       <section
         id="contact"
-        className="bg-green-500 text-white py-20 text-center"
+        className="bg-primary py-20 text-center"
       >
         <div className="container mx-auto">
           <h2 className="text-3xl font-bold mb-6">Get in Touch</h2>
@@ -149,31 +164,13 @@ const LandingPage = () => {
             />
             <button
               type="submit"
-              className="bg-white text-green-500 px-8 py-4 rounded-lg font-bold hover:bg-gray-100"
+              className="bg-white text-primary px-8 py-4 rounded-lg font-bold hover:bg-gray-100"
             >
               Join Now
             </button>
           </form>
         </div>
       </section>
-
-      {/* Footer */}
-      <footer className="bg-gray-800 text-gray-400 py-6">
-        <div className="container mx-auto text-center">
-          <p>&copy; 2024 MindCare. All rights reserved.</p>
-          <div className="flex justify-center space-x-4 mt-4">
-            <a href="#" className="hover:text-white">
-              Facebook
-            </a>
-            <a href="#" className="hover:text-white">
-              Twitter
-            </a>
-            <a href="#" className="hover:text-white">
-              Instagram
-            </a>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 };

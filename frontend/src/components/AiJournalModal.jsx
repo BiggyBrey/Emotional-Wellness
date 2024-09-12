@@ -9,8 +9,8 @@ export default function AiJournalModal(props) {
     const closeModal = () => setIsOpen(false);
 
     const handleDelete = () => {
-        props.handleDeleteEntry(userID, props.entryID);
-        alert(`deleted ${props.entryTitle} with id ${props.entryID}`)
+        props.deleteChat(userID, props.convoID);
+        // alert(`deleted ${props.content} with id ${props.convoID}`)
         closeModal(); // Close the modal after deleting
     };
 
@@ -38,7 +38,7 @@ export default function AiJournalModal(props) {
                 <dialog open className="modal modal-bottom sm:modal-middle">
                     <div className="modal-box">
                         <h3 className="font-bold text-lg">Hello! Are you sure you want to delete:</h3>
-                        <h3 className="font-bold text-lg">{props.entryTitle}</h3>
+                        <h3 className="font-bold text-lg">{props.content}</h3>
                         <p className="py-4">Press ESC key or click the cancel button to close</p>
                         <div className="modal-action flex justify-between">
                             <form className="flex w-full justify-between" method="dialog">
