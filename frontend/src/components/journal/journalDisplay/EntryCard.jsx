@@ -7,7 +7,15 @@ export default function EntryCard(props) {
         const convertedDate = new Date(date)
         return convertedDate.toLocaleDateString();
     }
-    convertDate(props.entry.date)
+
+    // if the given date is with a week of today then it is recent otherwise false
+    function isRecent(date) {
+        const givenDate = new Date(date);
+        const today = new Date();
+        const timeDifference = Math.abs(today - givenDate);
+        const dayDifference = timeDifference / (1000 * 60 * 60 * 24); // Convert time difference to days
+        return dayDifference <= 7; // Check if the date is within 7 days (a week)
+    }
     return (
         <>
             {/* <div>
@@ -52,7 +60,7 @@ export default function EntryCard(props) {
 
                             <div className="card-body">
                                 <time className="font-mono italic">{new Date(props.entry.date).toLocaleTimeString()}</time>
-                                <div className="badge badge-secondary">Recent</div>
+                                {isRecent(props.entry.date) && < div className="badge badge-secondary">Recent</div>}
                                 {props.entry.title && <h2 className="card-title text-lg font-black">{props.entry.title}</h2>}
                                 <p>{props.entry.content}</p>
                                 <div className="card-actions justify-end">
@@ -65,9 +73,9 @@ export default function EntryCard(props) {
 
                     </div>
 
-                </Link>
+                </Link >
 
-            </div>
+            </div >
         </>
     )
 }
