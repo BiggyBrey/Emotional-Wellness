@@ -1,7 +1,6 @@
 import "./DashPageStyles.css";
-
 import React, { useEffect, useState } from 'react';
-import { useLoaderData } from 'react-router-dom';
+import { useLoaderData, useLocation } from 'react-router-dom';
 import { getAiChatById, startAiChat, continueAiChat, deleteConversation } from "../../services/openAiApi.js";
 import { getUserById } from "../../services/api.js";
 import { requireAuth } from '../../services/UserAuth';
@@ -20,6 +19,10 @@ const DashPage = () => {
 
   let userID = JSON.parse(localStorage.getItem("userID"));
   const date = new Date();
+  //context localstorage, session, url, 
+  const location = useLocation();
+  const [entry, setEntry] = useState(location.state)
+  console.log("entry:", entry)
   // chat bot code
   const loader = useLoaderData(); // UseLoaderData will provide the initial data
   console.log(loader)
@@ -38,7 +41,7 @@ const DashPage = () => {
   }));
 
 
-  const [inputMessage, setInputMessage] = useState('');
+  const [inputMessage, setInputMessage] = useState(entry?.content || "");
   const [isNewConversation, setIsNewConversation] = useState(true);
   const [convoID, setConvoID] = useState("");
   const [showEmoji, setShowEmojis] = useState(false);
@@ -72,7 +75,7 @@ const DashPage = () => {
         // on pg start/ refresh or new button
       } else if (isNewConversation) {
         console.log(selectedEmoji)
-        const response = await startAiChat({ userID, message: inputMessage, isNewConversation, mood: selectedEmoji });
+        const response = await startAiChat({ userID, message: inputMessage, isNewConversation, mood: selectedEmoji, title: entry?.title });
         console.log(response.data)
 
         aiResponse = response.data.aiResponse
@@ -80,7 +83,7 @@ const DashPage = () => {
         const newConversation = response.data.convo;
         setConversations(prevConversations => [...prevConversations, newConversation]);
       } else {
-        const response = await startAiChat({ userID, message: inputMessage, isNewConversation });
+        const response = await startAiChat({ userID, message: inputMessage, isNewConversation, title: entry?.title });
         console.log(response.data)
         aiResponse = response.data.aiResponse
       }
@@ -88,6 +91,7 @@ const DashPage = () => {
 
       setIsNewConversation(false);
       setMessages(prevMessages => [...prevMessages, aiResponse]);
+      setEntry(null)
       await reloadData()
     }
     else if (!inputMessage.trim()) {
@@ -106,6 +110,8 @@ const DashPage = () => {
     setMessages([]);
     setIsNewConversation(true); // Make new conversation flag true
     setConvoID("")
+    setInputMessage("")
+    setEntry(null)
   };
 
   const loadConversation = async (convoID) => {
@@ -291,7 +297,7 @@ const DashPage = () => {
                   date={chat.startedAt}
                   updated={chat.updatedAt}
                   mood={chat.mood}
-                  content={chat.messages[1].content}
+                  content={chat.title || chat.summary}
                   deleteChat={handleDeleteChat}
                   convoID={chat._id}
                 />
