@@ -1,14 +1,24 @@
 // import Chart from 'chart.js/auto'
-import PolarAreaChart from './components/MoodMetricsChart/PolarAreaChart'
+import { useLoaderData } from "react-router-dom";
+import { requireAuth } from "./services/UserAuth";
+import { getAiChatById } from "./services/openAiApi";
+import PolarAreaChart from "./components/MoodMetricsChart/PolarAreaChart";
 // import "./components/NEW-Dashboard/DashPageStyles"
 
-
-function MoodMetrics(){
-return(
-    <>
-<PolarAreaChart/>
-
-    </>
-)
+export async function loader() {
+  await requireAuth();
+  const response = await getAiChatById(
+    JSON.parse(localStorage.getItem("userID"))
+  );
+  return response.data;
 }
-export default MoodMetrics
+function MoodMetrics() {
+  const loader = useLoaderData();
+  console.log(loader)
+  return (
+    <>
+      <PolarAreaChart />
+    </>
+  );
+}
+export default MoodMetrics;

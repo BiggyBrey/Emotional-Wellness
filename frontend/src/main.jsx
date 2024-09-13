@@ -19,7 +19,7 @@ import Dashboard, { loader as dashboardLoader } from "./Dashboard.jsx";
 import DashPage, {
   loader as NewDashboardLoader,
 } from "./components/NEW-Dashboard/DashPage.jsx";
-import MoodMetrics from "./MoodMetrics.jsx";
+import MoodMetrics,{loader as moodMetricsLoader} from "./MoodMetrics.jsx";
 //import all the components
 
 import {
@@ -74,7 +74,7 @@ const router = createBrowserRouter(
       <Route
      path="moodmetrics"
      element={<MoodMetrics />}
-    
+      loader ={moodMetricsLoader}    
    />
     </Route>
   
