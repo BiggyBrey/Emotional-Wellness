@@ -94,6 +94,7 @@ export default function SignUp() {
     console.log(userID)
     localStorage.setItem("userID", JSON.stringify(userID))
     navigate("/dashboard")
+    window.scrollTo(0, 0); // Scroll to the top of the page
     // if (password !== confirmPassword) {
     //   setErrorMessage('Passwords do not match!');
     // } else {

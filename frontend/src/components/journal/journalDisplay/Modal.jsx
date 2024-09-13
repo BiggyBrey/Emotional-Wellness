@@ -7,10 +7,8 @@ export default function Modal(props) {
     const userID = JSON.parse(localStorage.getItem("userID"))
     const openModal = () => setIsOpen(true);
     const closeModal = () => setIsOpen(false);
-
     const handleDelete = () => {
         props.handleDeleteEntry(userID, props.entryID);
-        alert(`deleted ${props.entryTitle} with id ${props.entryID}`)
         closeModal(); // Close the modal after deleting
     };
 
@@ -38,7 +36,7 @@ export default function Modal(props) {
                 <dialog open className="modal modal-bottom sm:modal-middle">
                     <div className="modal-box">
                         <h3 className="font-bold text-lg">Hello! Are you sure you want to delete:</h3>
-                        <h3 className="font-bold text-lg">{props.entryTitle}</h3>
+                        <h3 className="font-bold text-lg">{props.EntryTitle}</h3>
                         <p className="py-4">Press ESC key or click the cancel button to close</p>
                         <div className="modal-action flex justify-between">
                             <form className="flex w-full justify-between" method="dialog">
