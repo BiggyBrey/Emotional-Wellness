@@ -17,10 +17,15 @@ router.get("/:userID", async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
     // get journal doc
-    const foundJournal = await Journal.findOne({ userID });
+    let foundJournal = await Journal.findOne({ userID });
     // check if journal exists
     if (!foundJournal) {
-      return res.status(404).json({ message: "Journal not found" });
+      // return res.status(404).json({ message: "Journal not found" });
+      // for new users create for now
+      foundJournal = new Journal({
+        userID: userID,
+      });
+      foundJournal.save();
     }
 
     res.status(200).json(foundJournal);

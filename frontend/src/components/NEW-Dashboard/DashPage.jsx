@@ -1,9 +1,10 @@
 import "./DashPageStyles.css";
-
 import React, { useEffect, useState } from 'react';
-import { useLoaderData } from 'react-router-dom';
+import { useLoaderData, useLocation } from 'react-router-dom';
 import { getAiChatById, startAiChat, continueAiChat, deleteConversation } from "../../services/openAiApi.js";
+import { getUserById } from "../../services/api.js";
 import { requireAuth } from '../../services/UserAuth';
+import ErrorMessage from "../ErrorMessage.jsx";
 import { ChevronRight, Send } from 'lucide-react';
 import JournalHistory from "../JournalHistory.jsx";
 
@@ -11,16 +12,21 @@ import JournalHistory from "../JournalHistory.jsx";
 export async function loader() {
   await requireAuth()
   const response = await getAiChatById(JSON.parse(localStorage.getItem("userID")))
-  return response.data
+  const user = await getUserById(JSON.parse(localStorage.getItem("userID")))
+  return { aiChat: response.data, user: user.data }
 }
 const DashPage = () => {
 
   let userID = JSON.parse(localStorage.getItem("userID"));
   const date = new Date();
+  //context localstorage, session, url, 
+  const location = useLocation();
+  const [entry, setEntry] = useState(location.state)
+  console.log("entry:", entry)
   // chat bot code
-  const loadedAiChat = useLoaderData(); // UseLoaderData will provide the initial data
-  console.log(loadedAiChat)
-  const [conversations, setConversations] = useState(loadedAiChat.conversations); // previous conversations - display in drawer
+  const loader = useLoaderData(); // UseLoaderData will provide the initial data
+  console.log(loader)
+  const [conversations, setConversations] = useState(loader.aiChat.conversations); // previous conversations - display in drawer
   // const [conversation, setConversation] = useState()
   const [messages, setMessages] = useState([]); // messages btwn user and ai
   // State to store the selected emoji
@@ -35,16 +41,18 @@ const DashPage = () => {
   }));
 
 
-  const [inputMessage, setInputMessage] = useState('');
+  const [inputMessage, setInputMessage] = useState(entry?.content || "");
   const [isNewConversation, setIsNewConversation] = useState(true);
   const [convoID, setConvoID] = useState("");
   const [showEmoji, setShowEmojis] = useState(false);
-
+  const [isError, setIsError] = useState(false)
+  const [errorMessage, setErrorMessage] = useState("")
   const reloadData = async () => {
     const response = await getAiChatById(userID)
     setConversations(response.data.conversations)
     console.log(response.data)
   }
+  let lastDate = null;
   // useEffect(() => {
   //   reloadData()
   // }, [conversations])
@@ -52,6 +60,7 @@ const DashPage = () => {
   console.log("convo :", conversations)
 
   const handleSendMessage = async () => {
+    setIsError(false)
     if (inputMessage.trim() && (selectedEmoji || !isNewConversation)) {
       setMessages([...messages, { content: inputMessage, role: 'user' }]);
       setInputMessage('');
@@ -66,7 +75,7 @@ const DashPage = () => {
         // on pg start/ refresh or new button
       } else if (isNewConversation) {
         console.log(selectedEmoji)
-        const response = await startAiChat({ userID, message: inputMessage, isNewConversation, mood: selectedEmoji });
+        const response = await startAiChat({ userID, message: inputMessage, isNewConversation, mood: selectedEmoji, title: entry?.title });
         console.log(response.data)
 
         aiResponse = response.data.aiResponse
@@ -74,7 +83,7 @@ const DashPage = () => {
         const newConversation = response.data.convo;
         setConversations(prevConversations => [...prevConversations, newConversation]);
       } else {
-        const response = await startAiChat({ userID, message: inputMessage, isNewConversation });
+        const response = await startAiChat({ userID, message: inputMessage, isNewConversation, title: entry?.title });
         console.log(response.data)
         aiResponse = response.data.aiResponse
       }
@@ -82,14 +91,27 @@ const DashPage = () => {
 
       setIsNewConversation(false);
       setMessages(prevMessages => [...prevMessages, aiResponse]);
+      setEntry(null)
       await reloadData()
+    }
+    else if (!inputMessage.trim()) {
+      setIsError(true)
+      setErrorMessage("Please tell us about your day first")
+    }
+    else {
+      setIsError(true)
+      setErrorMessage("Please select a mood")
     }
   };
 
   const startNewConversation = () => {
+    //reset everything
+    setSelectedEmoji(null)
     setMessages([]);
     setIsNewConversation(true); // Make new conversation flag true
     setConvoID("")
+    setInputMessage("")
+    setEntry(null)
   };
 
   const loadConversation = async (convoID) => {
@@ -99,10 +121,11 @@ const DashPage = () => {
     }
     setConvoID(convoID)
     setIsNewConversation(false)
+    setSelectedEmoji(convo.mood)
 
   };
-  // List of emojis    ☹   🙃 '😎','😍','😂',,
-  const emojis = ['😢', '😠', '😒', '😈',  '😐', '😴','🥰', '😀','🥳'];
+  // List of emojis    
+  const emojis = ['😢', '😠', '😒', '😈', '😐', '😴', '🥰', '😀', '🥳'];
 
   // Function to handle emoji selection
   const handleEmojiSelect = (emoji) => {
@@ -127,6 +150,7 @@ const DashPage = () => {
     //reload pg
     setConversations(conversations.filter(convo => convo._id !== convoID))
     setMessages([])
+    startNewConversation()
     // window.location.reload();
 
 
@@ -170,21 +194,29 @@ const DashPage = () => {
 
           <div className="max-h-screen flex flex-col items-center p-4">
             {/* Top Section with 3 Oval Buttons */}
-            <div className="h-48 top-buttons grid w-full auto-rows-auto grid">
-              <div className="w-full flex justify-between items-start mb-2 ">
+            <div className="text-center text-4xl font-bold text-white drop-shadow-[0_1.5px_1.5px_rgba(0,0,0,0.8)]">
+              Welcome {loader.user.username} !
+            </div>
+
+            <div className="h-40 top-buttons grid w-full auto-rows-auto grid">
+              {/* <div className="w-full flex justify-between items-start mb-2 ">
+
                 <div className="flex space-x-4">
                   <button className="btn btn-primary btn-wide rounded-full shadow-md ">Sign up</button>
                   <button className="btn btn-secondary btn-wide rounded-full shadow-md">Login</button>
                 </div>
                 <button className="btn btn-accent btn-wide rounded-full shadow-md">Mood Metrics</button>
-              </div>
+              </div> */}
             </div>
 
             {/* Input Section */}
-            <div className="extra-vh items-center space-x-4 relative">
 
+            <div className="extra-vh items-center space-x-4 relative">
+              {/* display error message here on incomplete inputs */}
+              {isError && <ErrorMessage errorText={errorMessage} />}
               <div className="flex items-center justify-center space-x-4 relative">
                 <div>
+
                   {showEmoji &&
                     (< div className="flex gap-4 mb-5 absolute -top-16 right-0">
                       {emojis.map((emoji, index) => (
@@ -204,17 +236,17 @@ const DashPage = () => {
                   See all Convos...
                 </label>
 
-                <label className="input input-bordered text-slate-200 flex rounded-full items-center gap-2">
+                <label className="input input-bordered flex rounded-full items-center gap-2">
                   <input
                     name="content"
                     value={inputMessage}
                     onChange={(e) => setInputMessage(e.target.value)}
                     type="text"
                     placeholder="Share your day and an Emoji ..."
-                    className="input input-bordered input-lg grow w-96"
+                    className="input  w-96"
                   />
-
-                  <button onClick={() => setShowEmojis(!showEmoji)}>
+                  {/* cant chaneg emojis on started convos */}
+                  <button disabled={selectedEmoji && !isNewConversation} onClick={() => setShowEmojis(!showEmoji)}>
                     {selectedEmoji ? selectedEmoji : "🤔"}
                   </button>
                 </label>
@@ -226,16 +258,18 @@ const DashPage = () => {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 12h14m-7-7l7 7-7 7" />
                   </svg>
                 </button>
+
               </div>
               {/* chat/message history */}
-              <div className=" flex-grow h-96 overflow-auto mb-4 mt-8 rounded-lg shadow-md p-4">
+              <div className=" flex-grow h-5/6 overflow-auto mb-4 bg-white bg-opacity-50 mt-8 rounded-lg shadow-md p-4">
                 {messages.map((message, index) => (
                   <div key={index} className={`mb-2 ${message.role === 'user' ? 'text-right' : 'text-left'}`}>
                     <span className={`inline-block p-2 max-w-full shadow-md rounded-lg ${message.role === 'user' ? 'bg-blue-500 text-white' : 'bg-sky-600 text-white'}`}>
                       {message.content}
                     </span>
                   </div>
-                ))}
+                )).reverse()}
+                {/* old messages at bottom, most recent at top */}
               </div>
             </div>
 
@@ -256,20 +290,23 @@ const DashPage = () => {
               </button>
             </div>
             {/* journal / history */}
+            <p>Journal History</p>
             {conversations.map((chat, index) => (
               <li onClick={() => loadConversation(chat._id)} key={chat._id}>
                 <JournalHistory
-                  content={chat.messages[1].content}
+                  date={chat.startedAt}
+                  updated={chat.updatedAt}
+                  mood={chat.mood}
+                  content={chat.title || chat.summary}
                   deleteChat={handleDeleteChat}
                   convoID={chat._id}
                 />
               </li>
-            ))}
+            )).reverse()}
+            {/* old messages at bottom, most recent at top */}
           </ul>
         </div>
       </div>
-
-
     </>
 
   );

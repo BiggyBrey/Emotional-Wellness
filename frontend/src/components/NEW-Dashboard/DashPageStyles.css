@@ -4,10 +4,11 @@
 
 .extra-vh {
     height: 80vh;
+    opacity: 100%;
 }
 
 #root {
-    background-color: rgba(139, 122, 218, 0.514);
+    background-color: rgba(139, 122, 218, 0.614);
 
 }
 

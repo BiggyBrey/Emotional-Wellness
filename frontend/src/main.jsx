@@ -1,13 +1,10 @@
-import { StrictMode } from "react";
-import { createRoot } from "react-dom/client";
-import App from "./App.jsx";
-import { requireAuth } from "./services/UserAuth.jsx";
-import "./index.css";
-import LoginPage, {
-  loader as loginLoader,
-  action as loginAction,
-} from "./LoginPage.jsx";
-import SignUp, { action as signUpAction } from "./SignUp.jsx";
+import { StrictMode } from 'react'
+import { createRoot } from 'react-dom/client'
+import App from './App.jsx'
+import { requireAuth } from './services/UserAuth.jsx'
+import './index.css'
+import LoginPage, { loader as loginLoader, action as loginAction } from './LoginPage.jsx'
+import SignUp from './SignUp.jsx'
 // import AiChat from './AiChatBot.jsx'
 import ChatBot, { loader as AiChatLoader } from "./components/ChatBot.jsx";
 import Landing from "./Landing.jsx";
@@ -68,7 +65,10 @@ const router = createBrowserRouter(
         element={<DashPage />}
         loader={NewDashboardLoader}
       />
-      <Route path="signup" element={<SignUp />} action={signUpAction} />
+      <Route
+        path='signup'
+        element={<SignUp />}
+      />
       {/* <Route path='settings' element={<Settings/>}/> */}
       <Route path="NEW-dashboard" element={<DashPage />} />
       <Route

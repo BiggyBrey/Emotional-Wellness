@@ -1,6 +1,53 @@
 import React from "react";
 import landingScrolling from "./landingLogic";
 import { Link } from "react-router-dom";
+import SignUp from "./SignUp";
+import image from "../src/images/image.png"
+export async function action({ request }) {
+  const formData = await request.formData()
+  const username = formData.get("username")
+  const password = formData.get("password")
+  const confirmPassword = formData.get("confirm-password")
+  console.log(username, password, confirmPassword)
+  try {
+    // the user enters in username passowrd and confirm pass
+    //check if username is available
+    // if available proceed otherwise stop
+    // check if confirm password = password
+    // create a suer with username and passwsord
+    //on successful sign in
+    const response = await checkUsername(username)
+    console.log(response.data)
+    //check if username available
+    if (!response.data.available) {
+      console.log("username not available")
+      return "username not available"
+    }
+    //check if passwors match
+    if (password !== confirmPassword) {
+      console.log('Passwords do not match!');
+      return "Passwords do not match"
+    }
+    // create user
+    const user = await createUser({ username, password })
+    console.log("user created")
+    console.log(user.data)
+    // const response = await loginUser({ username, password })
+    // console.log(response.data.userId)
+    const userID = user.data.user._id;
+    console.log(userID)
+    localStorage.setItem("userID", JSON.stringify(userID))
+
+    return redirect("/dashboard")
+
+  }
+  catch (error) {
+    //on incorrect signin
+    return error.response?.data.message || null
+  }
+
+}
+
 const LandingPage = () => {
   landingScrolling();
   return (
@@ -55,9 +102,9 @@ const LandingPage = () => {
       <div
         className="hero min-h-screen"
         style={{
-          backgroundImage: "url(https://img.daisyui.com/images/stock/photo-1507358522600-9f71e620c44e.webp)",
+          backgroundImage: `url(${image})`,
         }}>
-        <div className="hero-overlay bg-opacity-60"></div>
+        <div className="hero-overlay bg-opacity-30"></div>
         <div className="container mx-auto">
           <h2 className="text-4xl font-bold mb-4">
             Your Mental Wellness Journey Begins Here
@@ -67,7 +114,17 @@ const LandingPage = () => {
           </p>
 
         </div>
-        <button className="btn mt-96 btn-primary">Get Started</button>
+        <div className="flex gap-4 mt-64 justify-around">
+          <button>
+            <img src="https://cdn.prod.website-files.com/64066f7ba948a8b9d8b1ca0e/66aa7d722d756e4900eb8165_ios.svg" alt="apple store image" />
+          </button>
+          <button>
+            <img src="https://cdn.prod.website-files.com/64066f7ba948a8b9d8b1ca0e/66aa6b5ea18fcd22f57cd027_google%20lay.svg" alt="google play store image" />
+          </button>
+        </div>
+        <a href="#signup">
+          <button className="btn mt-96 btn-primary"> Get Started</button>
+        </a>
       </div>
 
       {/* About Section */}
@@ -92,7 +149,7 @@ const LandingPage = () => {
             <div className="w-full sm:w-1/2 md:w-1/3 p-4">
               <div className="bg-white p-6 rounded-lg shadow-lg">
                 <h3 className="text-xl font-bold mb-4">Ai </h3>
-                <p>Speak with Ai chatbot</p>
+                <p>Speak with MindCare</p>
               </div>
             </div>
             <div className="w-full sm:w-1/2 md:w-1/3 p-4">
@@ -107,6 +164,26 @@ const LandingPage = () => {
                 <p>Track your mood to systematically improve your days.</p>
               </div>
             </div>
+          </div>
+          {/* image of chat */}
+          <div>
+            <div className="chat chat-start">
+              <div className="chat-header">
+                MindCare
+              </div>
+              <div className="chat-bubble chat-bubble-info">You were the Chosen One!</div>
+            </div>
+            <div className="chat chat-end">
+              <div className="chat-header">
+                User
+              </div>
+              <div className="chat-bubble chat-bubble-primary">I hate you!</div>
+            </div>
+          </div>
+
+          <div className="pt-8" id="signup">
+
+            <SignUp />
           </div>
         </div>
       </section>
