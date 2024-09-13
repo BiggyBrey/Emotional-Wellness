@@ -6,35 +6,83 @@ import {
   Form,
   Link,
   useLoaderData,
-  redirect
+  redirect,
+  useNavigate
 } from "react-router-dom";
 import ErrorMessage from "./components/ErrorMessage"
 
 
-export async function action({ request }) {
-  const formData = await request.formData()
-  const username = formData.get("username")
-  const password = formData.get("password")
-  const confirmPassword = formData.get("confirm-password")
-  console.log(username, password, confirmPassword)
-  try {
-    // the user enters in username passowrd and confirm pass
-    //check if username is available
-    // if available proceed otherwise stop
-    // check if confirm password = password
-    // create a suer with username and passwsord
-    //on successful sign in
+// export async function action({ request }) {
+//   const formData = await request.formData()
+//   const username = formData.get("username")
+//   const password = formData.get("password")
+//   const confirmPassword = formData.get("confirm-password")
+//   console.log(username, password, confirmPassword)
+//   try {
+//     // the user enters in username passowrd and confirm pass
+//     //check if username is available
+//     // if available proceed otherwise stop
+//     // check if confirm password = password
+//     // create a suer with username and passwsord
+//     //on successful sign in
+//     const response = await checkUsername(username)
+//     console.log(response.data)
+//     //check if username available
+//     if (!response.data.available) {
+//       console.log("username not available")
+//       return "username not available"
+//     }
+//     //check if passwors match
+//     if (password !== confirmPassword) {
+//       console.log('Passwords do not match!');
+//       return "Passwords do not match"
+//     }
+//     // create user
+//     const user = await createUser({ username, password })
+//     console.log("user created")
+//     console.log(user.data)
+//     // const response = await loginUser({ username, password })
+//     // console.log(response.data.userId)
+//     const userID = user.data.user._id;
+//     console.log(userID)
+//     localStorage.setItem("userID", JSON.stringify(userID))
+
+//     return redirect("/dashboard")
+
+//   }
+//   catch (error) {
+//     //on incorrect signin
+//     return error.response?.data.message || null
+//   }
+
+// }
+
+export default function SignUp() {
+  const [username, setUsername] = useState("")
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [isError, setIsError] = useState(false)
+  const [errorMessage, setErrorMessage] = useState('');
+  // const errorMessage = useActionData()
+  const navigate = useNavigate()
+  // console.log(errorMessage)
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     const response = await checkUsername(username)
     console.log(response.data)
     //check if username available
     if (!response.data.available) {
       console.log("username not available")
-      return "username not available"
+      setIsError(true)
+      setErrorMessage("username not available")
+      return
     }
     //check if passwors match
     if (password !== confirmPassword) {
       console.log('Passwords do not match!');
-      return "Passwords do not match"
+      setIsError(true)
+      setErrorMessage("Passwords do not match")
+      return
     }
     // create user
     const user = await createUser({ username, password })
@@ -45,33 +93,14 @@ export async function action({ request }) {
     const userID = user.data.user._id;
     console.log(userID)
     localStorage.setItem("userID", JSON.stringify(userID))
-
-    return redirect("/dashboard")
-
-  }
-  catch (error) {
-    //on incorrect signin
-    return error.response?.data.message || null
-  }
-
-}
-
-export default function SignUp() {
-  const [username, setUsername] = useState("")
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  //const [errorMessage, setErrorMessage] = useState('');
-  const errorMessage = useActionData()
-  console.log(errorMessage)
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (password !== confirmPassword) {
-      setErrorMessage('Passwords do not match!');
-    } else {
-      setErrorMessage('');
-      // Proceed with form submission logic here
-      console.log('Form submitted successfully with password:', password);
-    }
+    navigate("/dashboard")
+    // if (password !== confirmPassword) {
+    //   setErrorMessage('Passwords do not match!');
+    // } else {
+    //   setErrorMessage('');
+    //   // Proceed with form submission logic here
+    //   console.log('Form submitted successfully with password:', password);
+    // }
   };
 
   return (
@@ -84,7 +113,7 @@ export default function SignUp() {
           <p className="mt-4 text-lg leading-8 text-gray-300">
             Free your mind with MindCare
           </p>
-          <Form method="post" replace className="mt-6 flex  max-w gap-x-4 flex-col">
+          <form onSubmit={handleSubmit} className="mt-6 flex  max-w gap-x-4 flex-col">
             <label htmlFor="username" className="sr-only">
               Username
             </label>
@@ -95,6 +124,8 @@ export default function SignUp() {
               required
               placeholder="Enter your Username"
               autoComplete="username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
               className="min-w-0 flex-auto rounded-md border-0 bg-white/5 px-3.5 py-2 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
             />
 
@@ -138,7 +169,7 @@ export default function SignUp() {
             >
               Sign up Now
             </button>
-          </Form>
+          </form>
         </div>
 
 
