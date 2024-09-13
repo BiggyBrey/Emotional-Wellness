@@ -27,7 +27,7 @@ export async function action({ request }) {
     const response = await checkUsername(username)
     console.log(response.data)
     //check if username available
-    if(!response.data.available){
+    if (!response.data.available) {
       console.log("username not available")
       return "username not available"
     }
@@ -37,7 +37,7 @@ export async function action({ request }) {
       return "Passwords do not match"
     }
     // create user
-    const user = await createUser({username,password})
+    const user = await createUser({ username, password })
     console.log("user created")
     console.log(user.data)
     // const response = await loginUser({ username, password })
@@ -47,7 +47,7 @@ export async function action({ request }) {
     localStorage.setItem("userID", JSON.stringify(userID))
 
     return redirect("/dashboard")
-    
+
   }
   catch (error) {
     //on incorrect signin
@@ -57,7 +57,7 @@ export async function action({ request }) {
 }
 
 export default function SignUp() {
-  const [username, setUsername]=useState("")
+  const [username, setUsername] = useState("")
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   //const [errorMessage, setErrorMessage] = useState('');
@@ -75,89 +75,73 @@ export default function SignUp() {
   };
 
   return (
-    <div className="relative isolate overflow-hidden bg-gray-900 py-16 sm:py-24 lg:py-32">
-      <div className="mx-auto max-w-7xl px-6 lg:px-8">
-        <div className="mx-auto grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 lg:max-w-none lg:grid-cols-2">
-          <div className="max-w-xl lg:max-w-lg">
-            <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
-              Subscribe to our AI Wellness.
-            </h2>
-            <p className="mt-4 text-lg leading-8 text-gray-300">
-              Nostrud amet eu ullamco nisi aute in ad minim nostrud adipisicing velit quis. Duis tempor incididunt dolore.
-            </p>
-            <Form method="post" replace className="mt-6 flex max-w-md gap-x-4 flex-col">
-              <label htmlFor="username" className="sr-only">
-                Username
-              </label>
-              <input
-                id="username"
-                name="username"
-                type="text"
-                required
-                placeholder="Enter your Username"
-                autoComplete="username"
-                className="min-w-0 flex-auto rounded-md border-0 bg-white/5 px-3.5 py-2 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
-              />
-              
-              <label htmlFor="password" className="sr-only">
-                Password
-              </label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                required
-                placeholder="Enter your Password"
-                autoComplete="new-password"
-                className="min-w-0 flex-auto rounded-md border-0 bg-white/5 px-3.5 py-2 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
+    <div className="relative flex justify-center  isolate overflow-hidden bg-gray-900 py-16 sm:py-24 lg:py-32">
+      <div className="mx-auto flex max-w-7xl px-6 lg:px-8">
+        <div className="max-w-xl lg:max-w-lg">
+          <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
+            Register for MindCare
+          </h2>
+          <p className="mt-4 text-lg leading-8 text-gray-300">
+            Free your mind with MindCare
+          </p>
+          <Form method="post" replace className="mt-6 flex  max-w gap-x-4 flex-col">
+            <label htmlFor="username" className="sr-only">
+              Username
+            </label>
+            <input
+              id="username"
+              name="username"
+              type="text"
+              required
+              placeholder="Enter your Username"
+              autoComplete="username"
+              className="min-w-0 flex-auto rounded-md border-0 bg-white/5 px-3.5 py-2 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
+            />
 
-              <label htmlFor="confirm-password" className="sr-only">
-                Confirm Password
-              </label>
-              <input
-                id="confirm-password"
-                name="confirm-password"
-                type="password"
-                required
-                placeholder="Confirm your Password"
-                autoComplete="new-password"
-                className="min-w-0 flex-auto rounded-md border-0 bg-white/5 px-3.5 py-2 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-              />
+            <label htmlFor="password" className="sr-only">
+              Password
+            </label>
+            <input
+              id="password"
+              name="password"
+              type="password"
+              required
+              placeholder="Enter your Password"
+              autoComplete="new-password"
+              className="min-w-0 flex-auto rounded-md border-0 bg-white/5 px-3.5 py-2 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
 
-              {errorMessage && (
-                <p className="text-red-500 text-sm mt-2">{errorMessage}</p>
-              )}
+            <label htmlFor="confirm-password" className="sr-only">
+              Confirm Password
+            </label>
+            <input
+              id="confirm-password"
+              name="confirm-password"
+              type="password"
+              required
+              placeholder="Confirm your Password"
+              autoComplete="new-password"
+              className="min-w-0 flex-auto rounded-md border-0 bg-white/5 px-3.5 py-2 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+            />
 
-              <button
-                type="submit"
-                className="flex-none mt-4 rounded-md bg-indigo-500 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
-              >
-                Subscribe
-              </button>
-            </Form>
-          </div>
-          <dl className="grid grid-cols-1 gap-x-8 gap-y-10 sm:grid-cols-2 lg:pt-2">
-            <div className="flex flex-col items-start">
-              <div className="rounded-md bg-white/5 p-2 ring-1 ring-white/10"></div>
-              <dt className="mt-4 font-semibold text-white">Weekly articles</dt>
-              <dd className="mt-2 leading-7 text-gray-400">
-                Non laboris consequat cupidatat laborum magna. Eiusmod non irure cupidatat duis commodo amet.
-              </dd>
-            </div>
-            <div className="flex flex-col items-start">
-              <div className="rounded-md bg-white/5 p-2 ring-1 ring-white/10"></div>
-              <dt className="mt-4 font-semibold text-white">No spam</dt>
-              <dd className="mt-2 leading-7 text-gray-400">
-                Officia excepteur ullamco ut sint duis proident non adipisicing. Voluptate incididunt anim.
-              </dd>
-            </div>
-          </dl>
+            {errorMessage && (
+              <p className="text-red-500 text-sm mt-2">{errorMessage}</p>
+            )}
+
+            <button
+              type="submit"
+              className="flex-none mt-4 rounded-md bg-indigo-500 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
+            >
+              Sign up Now
+            </button>
+          </Form>
         </div>
+
+
       </div>
       <div
         aria-hidden="true"

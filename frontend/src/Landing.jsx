@@ -1,6 +1,53 @@
 import React from "react";
 import landingScrolling from "./landingLogic";
 import { Link } from "react-router-dom";
+import SignUp from "./SignUp";
+
+export async function action({ request }) {
+  const formData = await request.formData()
+  const username = formData.get("username")
+  const password = formData.get("password")
+  const confirmPassword = formData.get("confirm-password")
+  console.log(username, password, confirmPassword)
+  try {
+    // the user enters in username passowrd and confirm pass
+    //check if username is available
+    // if available proceed otherwise stop
+    // check if confirm password = password
+    // create a suer with username and passwsord
+    //on successful sign in
+    const response = await checkUsername(username)
+    console.log(response.data)
+    //check if username available
+    if (!response.data.available) {
+      console.log("username not available")
+      return "username not available"
+    }
+    //check if passwors match
+    if (password !== confirmPassword) {
+      console.log('Passwords do not match!');
+      return "Passwords do not match"
+    }
+    // create user
+    const user = await createUser({ username, password })
+    console.log("user created")
+    console.log(user.data)
+    // const response = await loginUser({ username, password })
+    // console.log(response.data.userId)
+    const userID = user.data.user._id;
+    console.log(userID)
+    localStorage.setItem("userID", JSON.stringify(userID))
+
+    return redirect("/dashboard")
+
+  }
+  catch (error) {
+    //on incorrect signin
+    return error.response?.data.message || null
+  }
+
+}
+
 const LandingPage = () => {
   landingScrolling();
   return (
@@ -92,7 +139,7 @@ const LandingPage = () => {
             <div className="w-full sm:w-1/2 md:w-1/3 p-4">
               <div className="bg-white p-6 rounded-lg shadow-lg">
                 <h3 className="text-xl font-bold mb-4">Ai </h3>
-                <p>Speak with Ai chatbot</p>
+                <p>Speak with MindCare</p>
               </div>
             </div>
             <div className="w-full sm:w-1/2 md:w-1/3 p-4">
@@ -107,6 +154,38 @@ const LandingPage = () => {
                 <p>Track your mood to systematically improve your days.</p>
               </div>
             </div>
+          </div>
+          {/* image of chat */}
+          <div>
+            <div className="chat chat-start">
+              <div className="chat-bubble chat-bubble-primary">What kind of nonsense is this</div>
+            </div>
+            <div className="chat chat-start">
+              <div className="chat-bubble chat-bubble-secondary">
+                Put me on the Council and not make me a Master!??
+              </div>
+            </div>
+            <div className="chat chat-start">
+              <div className="chat-bubble chat-bubble-accent">
+                That's never been done in the history of the Jedi. It's insulting!
+              </div>
+            </div>
+            <div className="chat chat-end">
+              <div className="chat-bubble chat-bubble-info">Calm down, Anakin.</div>
+            </div>
+            <div className="chat chat-end">
+              <div className="chat-bubble chat-bubble-success">You have been given a great honor.</div>
+            </div>
+            <div className="chat chat-end">
+              <div className="chat-bubble chat-bubble-warning">To be on the Council at your age.</div>
+            </div>
+            <div className="chat chat-end">
+              <div className="chat-bubble chat-bubble-error">It's never happened before.</div>
+            </div>
+          </div>
+          <div id="signup">
+
+            <SignUp />
           </div>
         </div>
       </section>
