@@ -14,10 +14,14 @@ export async function loader() {
 }
 function MoodMetrics() {
   const loader = useLoaderData();
-  console.log(loader)
+ 
+  let moods = loader.conversations.map(convo=> convo.mood)
+ 
   return (
     <>
-      <PolarAreaChart />
+      <PolarAreaChart
+      moods ={moods}
+      />
     </>
   );
 }

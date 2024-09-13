@@ -5,20 +5,41 @@ import "chartjs-adapter-moment"; // for time filtering
 
 Chart.register(ArcElement, Tooltip, Legend);
 
-const PolarAreaChart = () => {
-  
+const PolarAreaChart = (props) => {
+  let moods = {
+    "😢": 0,
+    "😠": 0,
+    "😒": 0,
+    "😈": 0,
+    "😐": 0,
+    "😴": 0,
+    "🥰": 0,
+    "😀": 0,
+    "🥳": 0,
+  };
+  console.log(props.moods);
+  // make an array where each element of the array is a count of that emoji
+  props.moods.forEach((mood) => {
+    moods[mood] += 1;
+  });
+  console.log(Object.values(moods));
   const data = {
-    labels: ["Red", "Green", "Yellow", "Grey", "Blue"],
+    labels: ["😢", "😠", "😒", "😈", "😐", "😴", "🥰", "😀", "🥳"],
+
     datasets: [
       {
-        label: "My First Dataset",
-        data: [11, 16, 7, 3, 14],
+        label: "Count",
+        data: Object.values(moods),
         backgroundColor: [
-          "rgb(255, 99, 132)",
-          "rgb(75, 192, 192)",
-          "rgb(255, 205, 86)",
-          "rgb(201, 203, 207)",
-          "rgb(54, 162, 235)",
+          "rgb(255, 99, 71) ",
+          "rgb(70, 130, 180)",
+          "rgb(154, 205, 50) ",
+          "rgb(255, 165, 0) ",
+          "rgb(123, 104, 238)",
+          "rgb(240, 128, 128)",
+          "rgb(34, 139, 34)",
+          "rgb(255, 20, 147)",
+          "rgb(72, 61, 139)",
         ],
       },
     ],
