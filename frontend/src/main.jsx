@@ -6,22 +6,29 @@ import './index.css'
 import LoginPage, { loader as loginLoader, action as loginAction } from './LoginPage.jsx'
 import SignUp from './SignUp.jsx'
 // import AiChat from './AiChatBot.jsx'
-import ChatBot, { loader as AiChatLoader } from './components/ChatBot.jsx'
-import Landing from "./Landing.jsx"
-import AiJournal, { loader as AiJournalLoader } from './components/AiJournal.jsx'
+import ChatBot, { loader as AiChatLoader } from "./components/ChatBot.jsx";
+import Landing from "./Landing.jsx";
+import AiJournal, {
+  loader as AiJournalLoader,
+} from "./components/AiJournal.jsx";
 import JournalPage from "./components/journal/JournalPage.jsx";
-import JournalDisplay, { loader as journalLoader } from "./components/journal/journalDisplay/JournalDisplay.jsx";
-import Dashboard, { loader as dashboardLoader } from "./Dashboard.jsx"
-import DashPage, { loader as NewDashboardLoader } from './components/NEW-Dashboard/DashPage.jsx'
+import JournalDisplay, {
+  loader as journalLoader,
+} from "./components/journal/journalDisplay/JournalDisplay.jsx";
+import Dashboard, { loader as dashboardLoader } from "./Dashboard.jsx";
+import DashPage, {
+  loader as NewDashboardLoader,
+} from "./components/NEW-Dashboard/DashPage.jsx";
+import MoodMetrics,{loader as moodMetricsLoader} from "./MoodMetrics.jsx";
 //import all the components
 
 import {
   createBrowserRouter,
   RouterProvider,
   createRoutesFromElements,
-  Route, redirect
+  Route,
+  redirect,
 } from "react-router-dom";
-
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -38,26 +45,23 @@ const router = createBrowserRouter(
       <Route
         path="entry/:id"
         element={<JournalPage />}
-        loader={async () => await requireAuth()} />
+        loader={async () => await requireAuth()}
+      />
       <Route
-        path='login'
+        path="login"
         element={<LoginPage />}
         loader={loginLoader}
         action={loginAction}
       />
+      <Route path="chatbot" element={<ChatBot />} loader={AiChatLoader} />
       <Route
-        path='chatbot'
-        element={<ChatBot />}
-        loader={AiChatLoader}
-      />
-      <Route
-        path='aijournal'
+        path="aijournal"
         element={<AiJournal />}
         loader={AiJournalLoader}
       />
       {/* <Route path='quiz' element={<Quiz/>}/> */}
       <Route
-        path='dashboard'
+        path="dashboard"
         element={<DashPage />}
         loader={NewDashboardLoader}
       />
@@ -66,8 +70,14 @@ const router = createBrowserRouter(
         element={<SignUp />}
       />
       {/* <Route path='settings' element={<Settings/>}/> */}
-      <Route path='NEW-dashboard' element={<DashPage />} />
+      <Route path="NEW-dashboard" element={<DashPage />} />
+      <Route
+     path="moodmetrics"
+     element={<MoodMetrics />}
+      loader ={moodMetricsLoader}    
+   />
     </Route>
+  
   )
   // {
   //   //landing page
