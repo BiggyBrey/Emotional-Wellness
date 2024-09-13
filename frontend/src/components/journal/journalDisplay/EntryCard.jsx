@@ -17,7 +17,22 @@ export default function EntryCard(props) {
             </div> */}
 
             <div className="card bg-base-200 shadow-xl ">
-                <div className="card-actions justify-end ">
+
+                <div className="card-actions justify-between ">
+                    {/* click on button
+                    go to dashboard
+                    start a convo with the content of the journal
+
+                    */}
+                    <Link
+                        to="/dashboard"
+                        state={props.entry}
+                    >
+                        <button className="btn">
+                            Ask MindCare?
+                        </button>
+                    </Link>
+
 
                     <Modal
                         handleDeleteEntry={props.handleDeleteEntry}
@@ -31,9 +46,9 @@ export default function EntryCard(props) {
 
                     <div className="card card-compact card-side bg-base-200 shadow-xl">
                         <div className="flex justify-between items-center">
-                            <div className="md:text-7xl p-4 text-6xl ">
+                            {/* <div className="md:text-7xl p-4 text-6xl ">
                                 😐
-                            </div>
+                            </div> */}
 
                             <div className="card-body">
                                 <time className="font-mono italic">{new Date(props.entry.date).toLocaleTimeString()}</time>
