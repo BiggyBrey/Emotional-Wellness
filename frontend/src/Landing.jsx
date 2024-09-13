@@ -2,7 +2,7 @@ import React from "react";
 import landingScrolling from "./landingLogic";
 import { Link } from "react-router-dom";
 import SignUp from "./SignUp";
-
+import image from "../src/images/image.png"
 export async function action({ request }) {
   const formData = await request.formData()
   const username = formData.get("username")
@@ -102,9 +102,9 @@ const LandingPage = () => {
       <div
         className="hero min-h-screen"
         style={{
-          backgroundImage: "url(https://img.daisyui.com/images/stock/photo-1507358522600-9f71e620c44e.webp)",
+          backgroundImage: `url(${image})`,
         }}>
-        <div className="hero-overlay bg-opacity-60"></div>
+        <div className="hero-overlay bg-opacity-30"></div>
         <div className="container mx-auto">
           <h2 className="text-4xl font-bold mb-4">
             Your Mental Wellness Journey Begins Here
@@ -114,7 +114,17 @@ const LandingPage = () => {
           </p>
 
         </div>
-        <button className="btn mt-96 btn-primary">Get Started</button>
+        <div className="flex gap-4 mt-64 justify-around">
+          <button>
+            <img src="https://cdn.prod.website-files.com/64066f7ba948a8b9d8b1ca0e/66aa7d722d756e4900eb8165_ios.svg" alt="apple store image" />
+          </button>
+          <button>
+            <img src="https://cdn.prod.website-files.com/64066f7ba948a8b9d8b1ca0e/66aa6b5ea18fcd22f57cd027_google%20lay.svg" alt="google play store image" />
+          </button>
+        </div>
+        <a href="#signup">
+          <button className="btn mt-96 btn-primary"> Get Started</button>
+        </a>
       </div>
 
       {/* About Section */}
@@ -158,32 +168,20 @@ const LandingPage = () => {
           {/* image of chat */}
           <div>
             <div className="chat chat-start">
-              <div className="chat-bubble chat-bubble-primary">What kind of nonsense is this</div>
-            </div>
-            <div className="chat chat-start">
-              <div className="chat-bubble chat-bubble-secondary">
-                Put me on the Council and not make me a Master!??
+              <div className="chat-header">
+                MindCare
               </div>
+              <div className="chat-bubble chat-bubble-info">You were the Chosen One!</div>
             </div>
-            <div className="chat chat-start">
-              <div className="chat-bubble chat-bubble-accent">
-                That's never been done in the history of the Jedi. It's insulting!
+            <div className="chat chat-end">
+              <div className="chat-header">
+                User
               </div>
-            </div>
-            <div className="chat chat-end">
-              <div className="chat-bubble chat-bubble-info">Calm down, Anakin.</div>
-            </div>
-            <div className="chat chat-end">
-              <div className="chat-bubble chat-bubble-success">You have been given a great honor.</div>
-            </div>
-            <div className="chat chat-end">
-              <div className="chat-bubble chat-bubble-warning">To be on the Council at your age.</div>
-            </div>
-            <div className="chat chat-end">
-              <div className="chat-bubble chat-bubble-error">It's never happened before.</div>
+              <div className="chat-bubble chat-bubble-primary">I hate you!</div>
             </div>
           </div>
-          <div id="signup">
+
+          <div className="pt-8" id="signup">
 
             <SignUp />
           </div>
