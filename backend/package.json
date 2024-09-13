@@ -9,6 +9,7 @@
     "seed database": "doppler run node utils/seedUser.js",
     "start": "doppler run node server.js",
     "dev": "doppler run -p emotional-wellness-backend -c dev nodemon server.js"
+    
   },
   "keywords": [],
   "author": "",
