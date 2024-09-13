@@ -59,7 +59,7 @@ export default function JournalDisplay() {
                 </Link>
             </div>
 
-            <ul className="timeline timeline-snap-icon max-md:timeline-compact timeline-vertical">
+            <ul className="timeline min-h-96 timeline-snap-icon max-md:timeline-compact timeline-vertical">
                 {journal.entries
                     .filter(entry => entry.content.toLowerCase().includes(searchText.toLowerCase()))
                     .map((entry, index) => (
