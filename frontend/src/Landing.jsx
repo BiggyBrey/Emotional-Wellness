@@ -167,9 +167,9 @@ const LandingPage = () => {
           </div>
           {/* image of chat */}
           <div>
-            <div className="chat chat-start">
+            <div className="chat chat-end">
 
-            <div className="chat-header">
+              <div className="chat-header">
                 User
               </div>
               <div className="chat-bubble chat-bubble-primary">Today had its ups and downs, but I handled it. I woke up feeling anxious and had trouble focusing at work, but I pushed through and got things done. I relaxed at home for a bit, and while I didn’t do much, I’m letting myself feel okay about it. I’m making progress.
@@ -177,17 +177,17 @@ const LandingPage = () => {
 
             </div>
 
-              
-            </div>
-            <div className="chat chat-end">
+
+          </div>
+          <div className="chat chat-start">
 
             <div className="chat-header">
-                MindCare
-              </div>
-              <div className="chat-bubble chat-bubble-info">It's great that you recognized your anxiety and successfully pushed through your work! Acknowledging your need to relax at home is important for self-care. Celebrate this progress and remember: it's okay to take breaks; they help recharge your energy. 💪✨</div>
-          
+              MindCare
+            </div>
+            <div className="chat-bubble chat-bubble-info">It's great that you recognized your anxiety and successfully pushed through your work! Acknowledging your need to relax at home is important for self-care. Celebrate this progress and remember: it's okay to take breaks; they help recharge your energy. 💪✨</div>
 
-          
+
+
           </div>
 
           <div className="pt-8" id="signup">

@@ -3,12 +3,13 @@ import { useEffect, useState } from "react"
 import "./journalstyle.css"
 // import Navbar from ""
 import { createJournal, updateJournal } from "../../services/api"
-import { useLocation } from "react-router-dom"
+import { useNavigate, useLocation } from "react-router-dom"
 export default function JournalPage() {
 
     //i can either pull from local storage or usecontext
     const userID = JSON.parse(localStorage.getItem("userID"))
 
+    const navigate = useNavigate()
     //context localstorage, session, url, 
     const location = useLocation();
     const entry = location.state;
@@ -60,15 +61,17 @@ export default function JournalPage() {
     const handleUpdateJournal = async () => {
         if (!NewEntry.content) return;
         await updateJournal(NewEntry.userID, EntryID, NewEntry)
-        alert("journal updated")
+        navigate("/journals")
+        window.scrollTo(0, 0); // Scroll to the top of the page
     }
     const handleCreateJournal = async () => {
         if (!NewEntry.content) return;
         const newJournal = await createJournal(NewEntry)
-        alert("journal made");
-        setIsUpdate(true)
-        let length = newJournal.data.Journal.entries.length - 1
-        setEntryID(newJournal.data.Journal.entries[length]._id)
+        // setIsUpdate(true)
+        // let length = newJournal.data.Journal.entries.length - 1
+        // setEntryID(newJournal.data.Journal.entries[length]._id)
+        navigate("/journals")
+        window.scrollTo(0, 0); // Scroll to the top of the page
     }
     const handleInputChange = (e) => {
         const { name, value } = e.target
