@@ -72,9 +72,9 @@ const router = createBrowserRouter(
       {/* <Route path='settings' element={<Settings/>}/> */}
       <Route path="NEW-dashboard" element={<DashPage />} />
       <Route
-     path="MoodMetrics"
+     path="moodmetrics"
      element={<MoodMetrics />}
-     loader={MoodMetricsLoader}
+    
    />
     </Route>
   
